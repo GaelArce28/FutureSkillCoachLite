@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="FutureSkillCoachLite.Api/FutureSkillCoachLite.Api.csproj" />
+  <Project Path="FutureSkillCoachLite.Domain/FutureSkillCoachLite.Domain.csproj" />
+  <Project Path="FutureSkillCoachLite.DomainService/FutureSkillCoachLite.DomainService.csproj" />
+  <Project Path="FutureSkillCoachLite.Dto/FutureSkillCoachLite.Dto.csproj" />
+  <Project Path="FutureSkillCoachLite.Exceptions/FutureSkillCoachLite.Exceptions.csproj" />
+  <Project Path="FutureSkillCoachLite.Facade/FutureSkillCoachLite.Facade.csproj" />
+  <Project Path="FutureSkillCoachLite.Infrastructure/FutureSkillCoachLite.Infrastructure.csproj" />
+</Solution>
