@@ -21,6 +21,9 @@
             builder.Services.AddScoped<IClientRepository, ClientRepository>();
             builder.Services.AddScoped<IClientService, ClientService>();
             builder.Services.AddScoped<IClientFacade, ClientFacade>();
+            builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+            builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+            builder.Services.AddScoped<IAppointmentFacade, AppointmentFacade>();
 
         // OpenAPI documentation.
         builder.Services.AddOpenApi();
