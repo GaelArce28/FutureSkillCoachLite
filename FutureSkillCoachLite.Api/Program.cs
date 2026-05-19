@@ -18,6 +18,9 @@
             builder.Services.AddScoped<ICoachRepository, CoachRepository>();
             builder.Services.AddScoped<ICoachService, CoachService>();
             builder.Services.AddScoped<ICoachFacade, CoachFacade>();
+            builder.Services.AddScoped<IClientRepository, ClientRepository>();
+            builder.Services.AddScoped<IClientService, ClientService>();
+            builder.Services.AddScoped<IClientFacade, ClientFacade>();
 
         // OpenAPI documentation.
         builder.Services.AddOpenApi();
