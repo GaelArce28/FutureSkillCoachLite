@@ -5,6 +5,7 @@ function Cursos() {
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
 
+  // Esta linea sirve para trae los datos desde el back end
   useEffect(() => {
     fetch('https://localhost:5001/api/entrenamientos')
       .then((response) => {
@@ -14,6 +15,7 @@ function Cursos() {
 
         return response.json()
       })
+      
       .then((data) => {
         setEntrenamientos(data)
         setCargando(false)
