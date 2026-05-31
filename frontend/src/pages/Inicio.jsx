@@ -1,19 +1,21 @@
 import { Link } from "react-router-dom";
 import imagen1 from "../assets/1.jpeg";
 import actividad from "../assets/actividad.jpeg";
+import baner from "../assets/baner.png";
 import perfil from "../assets/perfil.jpeg";
-import Perfil from "./Perfil";
 
 function Inicio() {
   return (
     <>
-      <section className="hero">
-        <h2>Bienvenido a Future Skill Coach Lite</h2>
-        <p>
-          Mejora tus habilidades, revisa tu progreso y continúa esforzándote.
-        </p>
+      <section
+        className="hero"
+        style={{backgroundImage: `url(${baner})`,
+        }}
+      >
+      
 
-        <button>Comenzar</button>
+
+      
       </section>
 
       <section className="cards">
@@ -35,7 +37,7 @@ function Inicio() {
           <div className="card-overlay">
             <h3>Información</h3>
             <p>
-              Información sobre nuestras actividades, entrenadores y servicios.
+              Información sobre nuestros entrenadores.
             </p>
           </div>
         </Link>
@@ -45,9 +47,7 @@ function Inicio() {
 
           <div className="card-overlay">
             <h3>Perfil</h3>
-            <p>
-              Administra tu información de usuario.
-            </p>
+            <p>Administra tu información de usuario.</p>
           </div>
         </Link>
       </section>

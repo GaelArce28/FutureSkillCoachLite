@@ -1,17 +1,26 @@
-import { Link } from 'react-router'
-
-function Header() {
+function Footer() {
   return (
-    <header className="header">
-      <h1>Gimnacio El Dorado</h1>
+    <footer className="footer">
+      <div className="footer-content">
+        <div className="footer-brand">
+          <h2>
+            Gimnasio <span>El Dorado</span>
+          </h2>
+          <p>Fuerza, disciplina y resultados.</p>
+        </div>
 
-      <nav>
-        <Link to="/">Inicio</Link>
-        <Link to="/perfil">Perfil</Link>
-        <Link to="/login">Login</Link>
-      </nav>
-    </header>
-  )
+        <div className="footer-info">
+          <p>Horario: Lunes a Sábado 5:00 a.m. - 9:00 p.m.</p>
+          <p>Tel: 8888-8888</p>
+          <p>Ubicación: Costa Rica</p>
+        </div>
+      </div>
+
+      <div className="footer-bottom">
+        <p>© 2026 Gimnasio El Dorado. Todos los derechos reservados.</p>
+      </div>
+    </footer>
+  );
 }
 
-export default Header
+export default Footer;
