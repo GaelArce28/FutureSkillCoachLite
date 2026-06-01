@@ -6,6 +6,7 @@ import actividad from "./assets/actividad.jpeg";
 import Header from './components/Header'
 import Footer from './components/Footer'
 
+import Citas from './pages/Citas'
 import Inicio from './pages/Inicio'
 import Login from './pages/Login'
 import Actividades from './pages/Actividades'
@@ -20,6 +21,7 @@ function App() {
 
         <main className="main">
           <Routes>
+            <Route path="/citas" element={<Citas />} />
             <Route path="/" element={<Inicio />} />
             <Route path="/actividades" element={<Actividades />} />
             <Route path="/perfil" element={<Perfil />} />
