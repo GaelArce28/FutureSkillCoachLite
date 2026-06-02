@@ -1,100 +1,36 @@
-using FutureSkillCoachLite.Domain.Entities;
-using FutureSkillCoachLite.DomainService.Interfaces;
-using FutureSkillCoachLite.Infrastructure.Interfaces;
+using FutureSkillCoachLite.Domain;
+using FutureSkillCoachLite.DTO;
+using FutureSkillCoachLite.Infrastructure;
 
-namespace FutureSkillCoachLite.DomainService.Services;
-
-public class AppointmentService : IAppointmentService
+namespace FutureSkillCoachLite.DomainService
 {
-    private readonly IAppointmentRepository _appointmentRepository;
-
-    private static readonly string[] AllowedStatuses =
+    public class AppointmentService
     {
-        "Pending",
-        "Confirmed",
-        "Completed",
-        "Cancelled"
-    };
+        private readonly AppointmentRepository _repository;
 
-    public AppointmentService(IAppointmentRepository appointmentRepository)
-    {
-        _appointmentRepository = appointmentRepository;
-    }
-
-    public async Task<List<Appointment>> GetAllAsync()
-    {
-        return await _appointmentRepository.GetAllAsync();
-    }
-
-    public async Task<Appointment?> GetByIdAsync(int appointmentId)
-    {
-        return await _appointmentRepository.GetByIdAsync(appointmentId);
-    }
-
-    public async Task<Appointment> CreateAsync(Appointment appointment)
-    {
-        ValidateAppointment(appointment);
-
-        var clientExists = await _appointmentRepository.ClientExistsAsync(appointment.ClientId);
-
-        if (!clientExists)
+        public AppointmentService(AppointmentRepository repository)
         {
-            throw new InvalidOperationException("The selected client does not exist.");
+            _repository = repository;
         }
 
-        var coachExists = await _appointmentRepository.CoachExistsAsync(appointment.CoachId);
-
-        if (!coachExists)
+        public async Task<Appointment> CreateAppointment(CreateAppointmentDTO dto)
         {
-            throw new InvalidOperationException("The selected coach does not exist.");
-        }
+            if (dto.ClientId <= 0)
+                throw new Exception("Client is required");
 
-        return await _appointmentRepository.AddAsync(appointment);
-    }
+            if (dto.CoachId <= 0)
+                throw new Exception("Coach is required");
 
-    public async Task<Appointment?> UpdateAsync(Appointment appointment)
-    {
-        ValidateAppointment(appointment);
+            var appointment = new Appointment
+            {
+                ClientId = dto.ClientId,
+                CoachId = dto.CoachId,
+                Topic = dto.Topic,
+                AppointmentDate = dto.AppointmentDate,
+                Status = "Pending"
+            };
 
-        var clientExists = await _appointmentRepository.ClientExistsAsync(appointment.ClientId);
-
-        if (!clientExists)
-        {
-            throw new InvalidOperationException("The selected client does not exist.");
-        }
-
-        var coachExists = await _appointmentRepository.CoachExistsAsync(appointment.CoachId);
-
-        if (!coachExists)
-        {
-            throw new InvalidOperationException("The selected coach does not exist.");
-        }
-
-        return await _appointmentRepository.UpdateAsync(appointment);
-    }
-
-    public async Task<bool> DeleteAsync(int appointmentId)
-    {
-        return await _appointmentRepository.DeleteAsync(appointmentId);
-    }
-
-    private static void ValidateAppointment(Appointment appointment)
-    {
-        if (string.IsNullOrWhiteSpace(appointment.Topic))
-        {
-            throw new InvalidOperationException("Topic is required.");
-        }
-
-        if (string.IsNullOrWhiteSpace(appointment.Status))
-        {
-            throw new InvalidOperationException("Status is required.");
-        }
-
-        if (!AllowedStatuses.Contains(appointment.Status))
-        {
-            throw new InvalidOperationException(
-                "Status must be Pending, Confirmed, Completed or Cancelled."
-            );
+            return await _repository.CreateAsync(appointment);
         }
     }
 }
