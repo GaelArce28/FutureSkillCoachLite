@@ -4,7 +4,7 @@
                 container_name: future-skill-sqlserver
                 environment:
                   ACCEPT_EULA: "Y"
-                  MSSQL_SA_PASSWORD: "YourStrongPass123!"
+                  MSSQL_SA_PASSWORD: "DS42026!"
                 ports:
                   - "1433:1433"
                 volumes:

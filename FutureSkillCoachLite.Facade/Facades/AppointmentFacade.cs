@@ -13,7 +13,7 @@ namespace FutureSkillCoachLite.Facade
             _service = service;
         }
 
-        public async Task<Appointment> CreateAppointment(CreateAppointmentDTO dto)
+        public async Task<Appointment> CreateAppointment(CreateAppointmentRequestDTO dto)
         {
             return await _service.CreateAppointment(dto);
         }
