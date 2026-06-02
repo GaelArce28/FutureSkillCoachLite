@@ -1,36 +1,108 @@
-using FutureSkillCoachLite.Domain;
-using FutureSkillCoachLite.DTO;
-using FutureSkillCoachLite.Infrastructure;
+using FutureSkillCoachLite.Domain.Entities;
+using FutureSkillCoachLite.DomainService.Interfaces;
+using FutureSkillCoachLite.Infrastructure.Interfaces;
 
-namespace FutureSkillCoachLite.DomainService
+namespace FutureSkillCoachLite.DomainService.Services;
+
+public class AppointmentService : IAppointmentService
 {
-    public class AppointmentService
+    private readonly IAppointmentRepository _appointmentRepository;
+
+    public AppointmentService(IAppointmentRepository appointmentRepository)
     {
-        private readonly AppointmentRepository _repository;
+        _appointmentRepository = appointmentRepository;
+    }
 
-        public AppointmentService(AppointmentRepository repository)
+    public async Task<List<Appointment>> GetAllAsync()
+    {
+        return await _appointmentRepository.GetAllAsync();
+    }
+
+    public async Task<Appointment?> GetByIdAsync(int appointmentId)
+    {
+        return await _appointmentRepository.GetByIdAsync(appointmentId);
+    }
+
+    public async Task<Appointment> CreateAsync(Appointment appointment)
+    {
+        if (appointment.ClientId <= 0)
         {
-            _repository = repository;
+            throw new InvalidOperationException("Client is required.");
         }
 
-        public async Task<Appointment> CreateAppointment(CreateAppointmentDTO dto)
+        if (appointment.CoachId <= 0)
         {
-            if (dto.ClientId <= 0)
-                throw new Exception("Client is required");
-
-            if (dto.CoachId <= 0)
-                throw new Exception("Coach is required");
-
-            var appointment = new Appointment
-            {
-                ClientId = dto.ClientId,
-                CoachId = dto.CoachId,
-                Topic = dto.Topic,
-                AppointmentDate = dto.AppointmentDate,
-                Status = "Pending"
-            };
-
-            return await _repository.CreateAsync(appointment);
+            throw new InvalidOperationException("Coach is required.");
         }
+
+        if (string.IsNullOrWhiteSpace(appointment.Topic))
+        {
+            throw new InvalidOperationException("Topic is required.");
+        }
+
+        var clientExists = await _appointmentRepository.ClientExistsAsync(appointment.ClientId);
+
+        if (!clientExists)
+        {
+            throw new InvalidOperationException("Client does not exist.");
+        }
+
+        var coachExists = await _appointmentRepository.CoachExistsAsync(appointment.CoachId);
+
+        if (!coachExists)
+        {
+            throw new InvalidOperationException("Coach does not exist.");
+        }
+
+        if (string.IsNullOrWhiteSpace(appointment.Status))
+        {
+            appointment.Status = "Pending";
+        }
+
+        return await _appointmentRepository.AddAsync(appointment);
+    }
+
+    public async Task<Appointment?> UpdateAsync(Appointment appointment)
+    {
+        if (appointment.ClientId <= 0)
+        {
+            throw new InvalidOperationException("Client is required.");
+        }
+
+        if (appointment.CoachId <= 0)
+        {
+            throw new InvalidOperationException("Coach is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(appointment.Topic))
+        {
+            throw new InvalidOperationException("Topic is required.");
+        }
+
+        var clientExists = await _appointmentRepository.ClientExistsAsync(appointment.ClientId);
+
+        if (!clientExists)
+        {
+            throw new InvalidOperationException("Client does not exist.");
+        }
+
+        var coachExists = await _appointmentRepository.CoachExistsAsync(appointment.CoachId);
+
+        if (!coachExists)
+        {
+            throw new InvalidOperationException("Coach does not exist.");
+        }
+
+        if (string.IsNullOrWhiteSpace(appointment.Status))
+        {
+            appointment.Status = "Pending";
+        }
+
+        return await _appointmentRepository.UpdateAsync(appointment);
+    }
+
+    public async Task<bool> DeleteAsync(int appointmentId)
+    {
+        return await _appointmentRepository.DeleteAsync(appointmentId);
     }
 }
