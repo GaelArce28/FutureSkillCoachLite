@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Design;
                     var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
                     optionsBuilder.UseSqlServer(
-                        "Server=localhost,1433;Database=FutureSkillCoachDb;User Id=sa;Password=YourStrongPass123!;TrustServerCertificate=True;"
+                        "Server=localhost,1433;Database=FutureSkillCoachDb;User Id=sa;Password=DS42026!;TrustServerCertificate=True;"
                     );
 
                     return new AppDbContext(optionsBuilder.Options);
