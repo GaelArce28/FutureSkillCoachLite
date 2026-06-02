@@ -1,0 +1,4 @@
+
+El siguiente comando es para realizar las migraciones y actualizaciones necesarias al ejecutar el docker-compose.yml y al establecer la conexion con 
+dbeaver, en ese momento finalmente se ejecuta el comando:
+dotnet ef database update --project FutureSkillCoachLite.Infrastructure --startup-project FutureSkillCoachLite.Api

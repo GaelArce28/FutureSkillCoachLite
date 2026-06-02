@@ -3,6 +3,7 @@
             using FutureSkillCoachLite.Domain.Entities;
         using Microsoft.EntityFrameworkCore;
 
+
         namespace FutureSkillCoachLite.Infrastructure.Data;
 
         public class AppDbContext : DbContext
@@ -12,6 +13,7 @@
             {
             }
 
+            //uso adecuado de dbset<Entity> para cada entidad como nos ensenio la profe
             public DbSet<Coach> Coaches { get; set; }
 
             public DbSet<Client> Clients { get; set; }
