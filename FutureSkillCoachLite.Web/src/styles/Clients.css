@@ -88,3 +88,44 @@
   background-color: #dcfce7;
   color: #166534;
 }
+
+.clients-page {
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.clients-list-card {
+  width: 100%;
+  max-width: 900px;
+  background-color: white;
+  padding: 28px;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.clients-list-card h2 {
+  margin-bottom: 16px;
+  color: #1f2937;
+}
+
+.clients-table-wrapper {
+  overflow-x: auto;
+}
+
+.clients-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.clients-table th,
+.clients-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.clients-table th {
+  background-color: #111827;
+  color: white;
+}

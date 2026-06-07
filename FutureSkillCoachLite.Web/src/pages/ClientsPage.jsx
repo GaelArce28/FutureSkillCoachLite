@@ -1,18 +1,7 @@
-import { useState } from "react";
-import "../styles/clients.css";
-
-const mockCoaches = [
-  {
-    coachId: 1,
-    fullName: "Carlos Mora",
-    specialty: "Coaching profesional",
-  },
-  {
-    coachId: 2,
-    fullName: "María López",
-    specialty: "Liderazgo",
-  },
-];
+import { useEffect, useState } from "react";
+import { createClient, getClients } from "../api/clientApi";
+import { getCoaches } from "../api/coachApi";
+import "../styles/Clients.css";
 
 function ClientsPage() {
   const [formData, setFormData] = useState({
@@ -22,8 +11,34 @@ function ClientsPage() {
     coachId: "",
   });
 
+  const [clients, setClients] = useState([]);
+  const [coaches, setCoaches] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  useEffect(() => {
+    loadInitialData();
+  }, []);
+
+  async function loadInitialData() {
+    try {
+      setLoading(true);
+      setErrorMessage("");
+
+      const [clientsData, coachesData] = await Promise.all([
+        getClients(),
+        getCoaches(),
+      ]);
+
+      setClients(clientsData);
+      setCoaches(coachesData);
+    } catch (error) {
+      setErrorMessage(error.message || "Error al cargar la información.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -38,7 +53,7 @@ function ClientsPage() {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     setErrorMessage("");
@@ -59,23 +74,28 @@ function ClientsPage() {
       return;
     }
 
-    const clientToCreate = {
-      fullName: formData.fullName,
-      email: formData.email,
-      goal: formData.goal,
-      coachId: Number(formData.coachId),
-    };
+    try {
+      const clientToCreate = {
+        fullName: formData.fullName,
+        email: formData.email,
+        goal: formData.goal,
+        coachId: Number(formData.coachId),
+      };
 
-    console.log("Cliente registrado:", clientToCreate);
+      const createdClient = await createClient(clientToCreate);
 
-    setSuccessMessage("Cliente registrado correctamente.");
+      setClients((previousClients) => [...previousClients, createdClient]);
+      setSuccessMessage("Cliente registrado correctamente.");
 
-    setFormData({
-      fullName: "",
-      email: "",
-      goal: "",
-      coachId: "",
-    });
+      setFormData({
+        fullName: "",
+        email: "",
+        goal: "",
+        coachId: "",
+      });
+    } catch (error) {
+      setErrorMessage(error.message || "Error al registrar el cliente.");
+    }
   }
 
   return (
@@ -131,7 +151,7 @@ function ClientsPage() {
               onChange={handleChange}
             >
               <option value="">Seleccione un coach</option>
-              {mockCoaches.map((coach) => (
+              {coaches.map((coach) => (
                 <option key={coach.coachId} value={coach.coachId}>
                   {coach.fullName} - {coach.specialty}
                 </option>
@@ -141,6 +161,41 @@ function ClientsPage() {
 
           <button type="submit">Registrar cliente</button>
         </form>
+      </section>
+
+      <section className="clients-list-card">
+        <h2>Clientes registrados</h2>
+
+        {loading ? (
+          <p>Cargando clientes...</p>
+        ) : clients.length === 0 ? (
+          <p>No hay clientes registrados.</p>
+        ) : (
+          <div className="clients-table-wrapper">
+            <table className="clients-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Correo</th>
+                  <th>Objetivo</th>
+                  <th>Coach</th>
+                </tr>
+              </thead>
+              <tbody>
+                {clients.map((client) => (
+                  <tr key={client.clientId}>
+                    <td>{client.clientId}</td>
+                    <td>{client.fullName}</td>
+                    <td>{client.email}</td>
+                    <td>{client.goal}</td>
+                    <td>{client.coachName ?? client.coachId}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
     </main>
   );

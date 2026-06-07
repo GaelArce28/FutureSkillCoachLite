@@ -1,39 +1,38 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "./App.css";
+
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+
+import Inicio from "./pages/Inicio";
+import Login from "./pages/Login";
+import Actividades from "./pages/Actividades";
+import Perfil from "./pages/Perfil";
+import Informacion from "./pages/Informacion";
+import Citas from "./pages/Citas";
 import ClientsPage from "./pages/ClientsPage";
-import "./styles/main.css";
-
-function Home() {
-  return (
-    <main className="page-container">
-      <h1>FutureSkillCoachLite</h1>
-      <p>Sistema de gestión para coaches, clientes y citas de coaching.</p>
-
-      <section className="home-card">
-        <h2>Bienvenido</h2>
-        
-      </section>
-    </main>
-  );
-}
 
 function App() {
   return (
     <BrowserRouter>
-      <header className="app-header">
-        <Link to="/" className="logo">
-          FutureSkillCoachLite
-        </Link>
+      <div className="app">
+        <Header />
 
-        <nav>
-          <Link to="/">Inicio</Link>
-          <Link to="/clients">Clientes</Link>
-        </nav>
-      </header>
+        <main className="main">
+          <Routes>
+            <Route path="/" element={<Inicio />} />
+            <Route path="/actividades" element={<Actividades />} />
+            <Route path="/informacion" element={<Informacion />} />
+            <Route path="/perfil" element={<Perfil />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/citas" element={<Citas />} />
+            <Route path="/clientes" element={<ClientsPage />} />
+            <Route path="/clients" element={<ClientsPage />} />
+          </Routes>
+        </main>
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/clients" element={<ClientsPage />} />
-      </Routes>
+        <Footer />
+      </div>
     </BrowserRouter>
   );
 }

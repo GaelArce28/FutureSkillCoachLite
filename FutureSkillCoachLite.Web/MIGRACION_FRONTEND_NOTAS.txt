@@ -1,0 +1,13 @@
+Cambios realizados:
+
+1. Se trasladaron los componentes, páginas, assets y estilos principales de la carpeta frontend hacia FutureSkillCoachLite.Web.
+2. Se conservó la carpeta src/api de FutureSkillCoachLite.Web.
+3. Se integró ClientsPage dentro de las rutas /clientes y /clients.
+4. Se corrigieron imports para usar react-router-dom.
+5. Se corrigió el import de Clients.css para evitar problemas de mayúsculas/minúsculas en Vercel/Linux.
+6. No se copió node_modules, porque debe regenerarse con npm install.
+
+Para probar:
+cd FutureSkillCoachLite.Web
+npm install
+npm run dev
