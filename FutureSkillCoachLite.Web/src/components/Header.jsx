@@ -29,7 +29,8 @@ function Header() {
         <Link to="/clientes" onClick={cerrarMenu}>Clientes</Link>
         <Link to="/citas" onClick={cerrarMenu}>Citas</Link>
         <Link to="/actividades" onClick={cerrarMenu}>Actividades</Link>
-        <Link to="/informacion" onClick={cerrarMenu}>Entrenadores</Link>
+        <Link to="/informacion" onClick={cerrarMenu}>Información</Link>
+        <Link to="/entrenadores" onClick={cerrarMenu}>Entrenadores</Link>
         <Link to="/perfil" onClick={cerrarMenu}>Perfil</Link>
         <Link to="/login" onClick={cerrarMenu}>Login</Link>
       </nav>

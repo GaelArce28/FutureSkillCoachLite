@@ -11,6 +11,7 @@ import Perfil from "./pages/Perfil";
 import Informacion from "./pages/Informacion";
 import Citas from "./pages/Citas";
 import ClientsPage from "./pages/ClientsPage";
+import Entrenadores from "./pages/Entrenadores";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="/citas" element={<Citas />} />
             <Route path="/clientes" element={<ClientsPage />} />
             <Route path="/clients" element={<ClientsPage />} />
+            <Route path="/entrenadores" element={<Entrenadores />} />
           </Routes>
         </main>
 
