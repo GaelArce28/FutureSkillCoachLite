@@ -33,6 +33,7 @@ function Header() {
         <Link to="/entrenadores" onClick={cerrarMenu}>Entrenadores</Link>
         <Link to="/perfil" onClick={cerrarMenu}>Perfil</Link>
         <Link to="/login" onClick={cerrarMenu}>Login</Link>
+        <Link to="/mis-clientes" onClick={cerrarMenu}>Mis clientes</Link>
       </nav>
     </header>
   );
