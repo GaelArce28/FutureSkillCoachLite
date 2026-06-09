@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { createCoach } from "../api/coachApi";
+import { useEffect, useState } from "react";
+import { createCoach, getCoaches } from "../api/coachApi";
 import "../styles/Clients.css";
 
 function Entrenadores() {
@@ -9,8 +9,28 @@ function Entrenadores() {
     email: "",
   });
 
+  const [coaches, setCoaches] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  useEffect(() => {
+    loadCoaches();
+  }, []);
+
+  async function loadCoaches() {
+    try {
+      setLoading(true);
+      setErrorMessage("");
+
+      const coachesData = await getCoaches();
+      setCoaches(coachesData);
+    } catch (error) {
+      setErrorMessage(error.message || "Error al cargar los coaches.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -60,8 +80,9 @@ function Entrenadores() {
         email: formData.email,
       };
 
-      await createCoach(coachToCreate);
+      const createdCoach = await createCoach(coachToCreate);
 
+      setCoaches((previousCoaches) => [...previousCoaches, createdCoach]);
       setSuccessMessage("Coach registrado correctamente.");
       clearForm();
     } catch (error) {
@@ -73,6 +94,7 @@ function Entrenadores() {
     <main className="clients-page">
       <section className="clients-card">
         <h1>Registrar coach</h1>
+
         <p className="clients-description">
           Cree un nuevo coach ingresando su nombre completo, especialidad y correo.
         </p>
@@ -116,6 +138,40 @@ function Entrenadores() {
 
           <button type="submit">Registrar coach</button>
         </form>
+      </section>
+
+      <section className="clients-list-card">
+        <h2>Coaches registrados</h2>
+
+        {loading ? (
+          <p>Cargando coaches...</p>
+        ) : coaches.length === 0 ? (
+          <p>No hay coaches registrados.</p>
+        ) : (
+          <div className="clients-table-wrapper">
+            <table className="clients-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Especialidad</th>
+                  <th>Correo</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {coaches.map((coach) => (
+                  <tr key={coach.coachId}>
+                    <td>{coach.coachId}</td>
+                    <td>{coach.fullName}</td>
+                    <td>{coach.specialty}</td>
+                    <td>{coach.email}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
     </main>
   );
