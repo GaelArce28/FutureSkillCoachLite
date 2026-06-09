@@ -18,22 +18,52 @@ public class ClientsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<ClientResponseDto>>> GetAll()
     {
-        var clients = await _clientFacade.GetAllAsync();
+        try
+        {
+            var clients = await _clientFacade.GetAllAsync();
 
-        return Ok(clients);
+            if (!clients.Any())
+            {
+                return NotFound(new
+                {
+                    message = "No clients registered."
+                });
+            }
+
+            return Ok(clients);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                message = "An internal server error occurred.",
+                error = ex.Message
+            });
+        }
     }
 
     [HttpGet("{clientId:int}")]
     public async Task<ActionResult<ClientResponseDto>> GetById(int clientId)
     {
-        var client = await _clientFacade.GetByIdAsync(clientId);
-
-        if (client == null)
+        try
         {
-            return NotFound(new { message = "Client not found." });
-        }
+            var client = await _clientFacade.GetByIdAsync(clientId);
 
-        return Ok(client);
+            if (client == null)
+            {
+                return NotFound(new { message = "Client not found." });
+            }
+
+            return Ok(client);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                message = "An internal server error occurred.",
+                error = ex.Message
+            });
+        }
     }
 
     [HttpPost]
@@ -53,6 +83,14 @@ public class ClientsController : ControllerBase
         {
             return BadRequest(new { message = ex.Message });
         }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                message = "An internal server error occurred.",
+                error = ex.Message
+            });
+        }
     }
 
     [HttpPut("{clientId:int}")]
@@ -60,26 +98,48 @@ public class ClientsController : ControllerBase
         int clientId,
         CreateClientRequestDto request)
     {
-        var updatedClient = await _clientFacade.UpdateAsync(clientId, request);
-
-        if (updatedClient == null)
+        try
         {
-            return NotFound(new { message = "Client not found." });
-        }
+            var updatedClient = await _clientFacade.UpdateAsync(clientId, request);
 
-        return Ok(updatedClient);
+            if (updatedClient == null)
+            {
+                return NotFound(new { message = "Client not found." });
+            }
+
+            return Ok(updatedClient);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                message = "An internal server error occurred.",
+                error = ex.Message
+            });
+        }
     }
 
     [HttpDelete("{clientId:int}")]
     public async Task<ActionResult> Delete(int clientId)
     {
-        var deleted = await _clientFacade.DeleteAsync(clientId);
-
-        if (!deleted)
+        try
         {
-            return NotFound(new { message = "Client not found." });
-        }
+            var deleted = await _clientFacade.DeleteAsync(clientId);
 
-        return NoContent();
+            if (!deleted)
+            {
+                return NotFound(new { message = "Client not found." });
+            }
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                message = "An internal server error occurred.",
+                error = ex.Message
+            });
+        }
     }
 }

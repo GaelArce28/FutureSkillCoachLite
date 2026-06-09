@@ -1,0 +1,45 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f5f7fb;
+}
+
+.app-header {
+  height: 70px;
+  padding: 0 32px;
+  background-color: #111827;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.app-header nav {
+  display: flex;
+  gap: 18px;
+}
+
+.app-header nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.app-header nav a:hover {
+  text-decoration: underline;
+}
+
+.page-container {
+  padding: 40px;
+}
