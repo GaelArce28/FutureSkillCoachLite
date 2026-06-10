@@ -21,7 +21,8 @@ body {
 
 button,
 input,
-select {
+select,
+textarea {
   font-family: inherit;
 }
 
@@ -43,14 +44,11 @@ button {
   width: 100%;
   background: linear-gradient(90deg, #0b0b0b, #1c1f24, #2f343a);
   color: #f5f5f5;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   padding: 24px 60px;
   border-bottom: 2px solid #d4af37;
-
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
   position: relative;
   z-index: 1000;
@@ -86,17 +84,13 @@ button {
   position: absolute;
   top: 100%;
   right: 60px;
-
   width: 230px;
   padding: 15px;
-
   background: linear-gradient(135deg, #0b0b0b, #1c1f24, #2f343a);
   border: 1px solid #d4af37;
   border-radius: 12px;
-
   flex-direction: column;
   align-items: flex-start;
-
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
   z-index: 1000;
 }
@@ -143,7 +137,6 @@ button {
   border-radius: 8px;
   font-size: 15px;
   font-weight: bold;
-  cursor: pointer;
   margin-top: 12px;
   margin-bottom: 40px;
   transition: 0.25s ease;
@@ -162,7 +155,6 @@ button {
   border-radius: 8px;
   font-size: 15px;
   font-weight: bold;
-  cursor: pointer;
   transition: 0.25s ease;
 }
 
@@ -180,20 +172,16 @@ button {
   min-height: 380px;
   margin: 40px auto;
   border-radius: 18px;
-
   position: relative;
   overflow: hidden;
-
   background-color: #050505;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
 }
 
@@ -247,7 +235,6 @@ button {
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
-
   display: flex;
   gap: 25px;
 }
@@ -256,11 +243,9 @@ button {
   position: relative;
   min-height: 260px;
   flex: 1;
-
   background-color: white;
   border-radius: 12px;
   overflow: hidden;
-
   box-shadow: 0 14px 10px rgba(0, 0, 0, 0.46);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -287,15 +272,12 @@ button {
   position: absolute;
   inset: 0;
   z-index: 2;
-
   background: rgba(0, 0, 0, 0.55);
   color: white;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   text-align: center;
   padding: 20px;
 }
@@ -349,7 +331,6 @@ button {
   border-radius: 10px;
   font-size: 18px;
   font-weight: bold;
-  cursor: pointer;
 }
 
 .formulario button:hover {
@@ -429,14 +410,11 @@ button {
   background: linear-gradient(135deg, #0b0b0b, #1c1f24, #2f343a);
   border: 1px solid rgba(212, 175, 55, 0.5);
   border-radius: 18px;
-
   padding: 32px 28px;
   min-height: 230px;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
-
   box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
 }
 
@@ -476,7 +454,8 @@ button {
    REGISTRO DE ENTRENADORES
 ========================================================= */
 
-.entrenadores-admin-page {
+.entrenadores-admin-page,
+.clientes-admin-page {
   width: 90%;
   max-width: 1100px;
   margin: 60px auto;
@@ -484,27 +463,32 @@ button {
 }
 
 .entrenadores-form-card,
-.entrenadores-list-card {
+.entrenadores-list-card,
+.clientes-form-card,
+.clientes-list-card {
   background: linear-gradient(135deg, #0b0b0b, #1c1f24, #2f343a);
   border: 1px solid rgba(212, 175, 55, 0.55);
   border-radius: 20px;
   box-shadow: 0 18px 35px rgba(0, 0, 0, 0.35);
 }
 
-.entrenadores-form-card {
+.entrenadores-form-card,
+.clientes-form-card {
   max-width: 700px;
   margin: 0 auto 45px;
   padding: 42px 36px;
   text-align: center;
 }
 
-.entrenadores-form-card h1 {
+.entrenadores-form-card h1,
+.clientes-form-card h1 {
   color: #d4af37;
   font-size: 42px;
   margin-bottom: 10px;
 }
 
-.entrenadores-description {
+.entrenadores-description,
+.clientes-description {
   color: #cfcfcf;
   font-size: 20px;
   line-height: 1.4;
@@ -512,20 +496,25 @@ button {
   margin: 0 auto 32px;
 }
 
-.entrenadores-form {
+.entrenadores-form,
+.clientes-form {
   display: flex;
   flex-direction: column;
   gap: 22px;
 }
 
-.entrenadores-form label {
+.entrenadores-form label,
+.clientes-form label {
   color: #f0c52f;
   font-size: 19px;
   font-weight: bold;
   text-align: left;
 }
 
-.entrenadores-form input {
+.entrenadores-form input,
+.clientes-form input,
+.clientes-form textarea,
+.clientes-form select {
   width: 100%;
   margin-top: 10px;
   padding: 15px 16px;
@@ -536,17 +525,28 @@ button {
   font-size: 16px;
 }
 
-.entrenadores-form input::placeholder {
+.clientes-form textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.entrenadores-form input::placeholder,
+.clientes-form input::placeholder,
+.clientes-form textarea::placeholder {
   color: #8f8f8f;
 }
 
-.entrenadores-form input:focus {
+.entrenadores-form input:focus,
+.clientes-form input:focus,
+.clientes-form textarea:focus,
+.clientes-form select:focus {
   outline: none;
   border-color: #f0c52f;
   box-shadow: 0 0 0 3px rgba(240, 197, 47, 0.15);
 }
 
-.entrenadores-form button {
+.entrenadores-form button,
+.clientes-form button {
   background-color: #f0c52f;
   color: #1d2024;
   border: none;
@@ -554,128 +554,74 @@ button {
   border-radius: 10px;
   font-size: 19px;
   font-weight: bold;
-  cursor: pointer;
   margin-top: 8px;
   transition: 0.25s ease;
 }
 
-.entrenadores-form button:hover {
+.entrenadores-form button:hover,
+.clientes-form button:hover {
   background-color: #b8860b;
   transform: scale(1.02);
 }
 
-.entrenadores-list-card {
+.entrenadores-list-card,
+.clientes-list-card {
   padding: 35px;
 }
 
-.entrenadores-list-card h2 {
+.entrenadores-list-card h2,
+.clientes-list-card h2 {
   color: #d4af37;
   text-align: center;
   font-size: 32px;
   margin-bottom: 28px;
 }
 
-.entrenadores-table-wrapper {
+.entrenadores-table-wrapper,
+.clientes-table-wrapper {
   width: 100%;
   overflow-x: auto;
   border-radius: 12px;
   border: 1px solid rgba(212, 175, 55, 0.35);
 }
 
-.entrenadores-table {
+.entrenadores-table,
+.clientes-table {
   width: 100%;
   border-collapse: collapse;
   background-color: #1d2024;
   font-size: 16px;
 }
 
-.entrenadores-table thead {
+.entrenadores-table thead,
+.clientes-table thead {
   background-color: #0b0b0b;
   color: #f0c52f;
 }
 
-.entrenadores-table th {
+.entrenadores-table th,
+.clientes-table th {
   padding: 17px 18px;
   text-align: left;
   font-weight: bold;
   border-bottom: 1px solid rgba(212, 175, 55, 0.35);
 }
 
-.entrenadores-table td {
+.entrenadores-table td,
+.clientes-table td {
   padding: 16px 18px;
   color: #f5f5f5;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.entrenadores-table tbody tr:hover {
+.entrenadores-table tbody tr:hover,
+.clientes-table tbody tr:hover {
   background-color: rgba(212, 175, 55, 0.08);
 }
 
-.entrenadores-table tbody tr:last-child td {
+.entrenadores-table tbody tr:last-child td,
+.clientes-table tbody tr:last-child td {
   border-bottom: none;
-}
-
-/* =========================================================
-   TABLAS DE CLIENTES / COACHES
-========================================================= */
-
-.coaches-page,
-.clientes-page {
-  width: 90%;
-  max-width: 1100px;
-  margin: 60px auto;
-  background: white;
-  color: #111827;
-  border-radius: 16px;
-  padding: 35px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
-}
-
-.coaches-page h2,
-.clientes-page h2 {
-  text-align: center;
-  font-size: 28px;
-  margin-bottom: 25px;
-  color: #111827;
-}
-
-.tabla-wrapper {
-  width: 100%;
-  overflow-x: auto;
-  border-radius: 12px;
-}
-
-.tabla-coaches,
-.tabla-clientes {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  font-size: 16px;
-}
-
-.tabla-coaches thead,
-.tabla-clientes thead {
-  background-color: #111827;
-  color: white;
-}
-
-.tabla-coaches th,
-.tabla-clientes th {
-  padding: 16px;
-  text-align: left;
-  font-weight: 700;
-}
-
-.tabla-coaches td,
-.tabla-clientes td {
-  padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
-  color: #111827;
-}
-
-.tabla-coaches tbody tr:hover,
-.tabla-clientes tbody tr:hover {
-  background-color: #f9fafb;
 }
 
 /* =========================================================
@@ -706,11 +652,9 @@ button {
 .perfil-card {
   max-width: 560px;
   margin: 0 auto;
-
   background: linear-gradient(135deg, #0b0b0b, #1c1f24, #2f343a);
   border: 1px solid rgba(212, 175, 55, 0.5);
   border-radius: 20px;
-
   padding: 38px 42px;
   box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
 }
@@ -719,15 +663,12 @@ button {
   width: 78px;
   height: 78px;
   margin: 0 auto 20px;
-
   border-radius: 50%;
   background: #f0c52f;
   color: #1d2024;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-size: 34px;
   font-weight: bold;
 }
@@ -770,7 +711,6 @@ button {
   border-radius: 8px;
   font-size: 17px;
   font-weight: bold;
-  cursor: pointer;
   transition: 0.25s ease;
 }
 
@@ -858,7 +798,6 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-
   margin-bottom: 28px;
   flex-wrap: wrap;
   gap: 16px;
@@ -928,16 +867,6 @@ button {
   border-radius: 12px;
 }
 
-.tabla-vacia p {
-  font-size: 16px;
-  margin-bottom: 6px;
-}
-
-.tabla-vacia-sub {
-  font-size: 14px;
-  color: #9ca3af;
-}
-
 .tabla-citas {
   width: 100%;
   border-collapse: collapse;
@@ -966,10 +895,6 @@ button {
 
 .tabla-citas tbody tr:hover {
   background-color: #f9fafb;
-}
-
-.tabla-citas tbody tr:last-child td {
-  border-bottom: none;
 }
 
 .select-estado {
@@ -1002,7 +927,6 @@ button {
   border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
-  cursor: pointer;
   transition: background 0.15s;
 }
 
@@ -1018,7 +942,6 @@ button {
   border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
-  cursor: pointer;
   transition: background 0.15s;
 }
 
@@ -1058,11 +981,9 @@ button {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   z-index: 1000;
   padding: 20px;
 }
@@ -1073,10 +994,8 @@ button {
   padding: 32px;
   width: 100%;
   max-width: 440px;
-
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
   animation: modalIn 0.25s ease;
-
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1134,15 +1053,19 @@ button {
   margin-top: 10px;
 }
 
-.btn-cancelar {
-  background: #f3f4f6;
-  color: #374151;
-  border: 1px solid #d1d5db;
+.btn-cancelar,
+.btn-guardar,
+.btn-eliminar-confirm {
   padding: 10px 22px;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
-  cursor: pointer;
+}
+
+.btn-cancelar {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
 }
 
 .btn-cancelar:hover {
@@ -1153,11 +1076,6 @@ button {
   background-color: #2563eb;
   color: white;
   border: none;
-  padding: 10px 22px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
   transition: background 0.15s;
 }
 
@@ -1174,11 +1092,6 @@ button {
   background-color: #dc2626;
   color: white;
   border: none;
-  padding: 10px 22px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
 }
 
 .btn-eliminar-confirm:hover {
@@ -1207,7 +1120,6 @@ button {
   max-width: 1200px;
   margin: 0 auto;
   padding: 35px 60px;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1294,12 +1206,10 @@ button {
     min-height: 0;
     aspect-ratio: 16 / 9;
     margin: 25px auto 35px;
-
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     background-color: #050505;
-
     border-radius: 16px;
   }
 
@@ -1318,7 +1228,6 @@ button {
   }
 
   .cards {
-    display: flex;
     flex-direction: column;
     gap: 28px;
     width: 100%;
@@ -1349,72 +1258,59 @@ button {
     max-width: 290px;
   }
 
-  .login {
+  .login,
+  .informacion,
+  .perfil-page,
+  .entrenadores-admin-page,
+  .clientes-admin-page {
     width: 95%;
     margin: 40px auto;
   }
 
-  .login-card {
-    padding: 28px 22px;
+  .login-card,
+  .perfil-card,
+  .entrenadores-form-card,
+  .clientes-form-card {
+    padding: 30px 24px;
   }
 
   .login-card h2 {
     font-size: 28px;
   }
 
-  .informacion,
-  .perfil-page,
-  .entrenadores-admin-page {
-    width: 95%;
-    margin: 40px auto;
-  }
-
   .info-header h2,
   .informacion h2,
   .perfil-page h2,
-  .entrenadores-form-card h1 {
+  .entrenadores-form-card h1,
+  .clientes-form-card h1 {
     font-size: 34px;
   }
 
   .info-header p,
   .informacion > p,
   .perfil-subtitulo,
-  .entrenadores-description {
+  .entrenadores-description,
+  .clientes-description {
     font-size: 18px;
-  }
-
-  .info-grid {
-    grid-template-columns: 1fr;
   }
 
   .info-card {
     padding: 26px 22px;
   }
 
-  .info-card h3 {
-    font-size: 26px;
-  }
-
-  .info-card p {
-    font-size: 18px;
-  }
-
-  .perfil-card,
-  .entrenadores-form-card {
-    padding: 30px 24px;
-  }
-
+  .info-card h3,
   .perfil-card h3 {
     font-size: 26px;
+  }
+
+  .info-card p,
+  .perfil-info p {
+    font-size: 18px;
   }
 
   .perfil-info,
   .perfil-form {
     text-align: center;
-  }
-
-  .perfil-info p {
-    font-size: 18px;
   }
 
   .perfil-acciones {
@@ -1427,43 +1323,32 @@ button {
     width: 100%;
   }
 
-  .entrenadores-list-card {
+  .entrenadores-list-card,
+  .clientes-list-card {
     padding: 24px 16px;
   }
 
-  .entrenadores-list-card h2 {
+  .entrenadores-list-card h2,
+  .clientes-list-card h2 {
     font-size: 27px;
   }
 
-  .entrenadores-form label {
+  .entrenadores-form label,
+  .clientes-form label {
     font-size: 17px;
   }
 
-  .entrenadores-table {
+  .entrenadores-table,
+  .clientes-table,
+  .tabla-citas {
     font-size: 14px;
   }
 
   .entrenadores-table th,
-  .entrenadores-table td {
+  .entrenadores-table td,
+  .clientes-table th,
+  .clientes-table td {
     padding: 13px 14px;
-  }
-
-  .coaches-page,
-  .clientes-page {
-    width: 95%;
-    padding: 24px 18px;
-    margin: 40px auto;
-  }
-
-  .coaches-page h2,
-  .clientes-page h2 {
-    font-size: 24px;
-  }
-
-  .tabla-coaches,
-  .tabla-clientes,
-  .tabla-citas {
-    font-size: 14px;
   }
 
   .footer {
