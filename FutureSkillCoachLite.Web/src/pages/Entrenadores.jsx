@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createCoach, getCoaches } from "../api/coachApi";
-import "../styles/Clients.css";
+import "../App.css";
 
 function Entrenadores() {
   const [formData, setFormData] = useState({
@@ -91,18 +91,18 @@ function Entrenadores() {
   }
 
   return (
-    <main className="clients-page">
-      <section className="clients-card">
+    <main className="entrenadores-admin-page">
+      <section className="entrenadores-form-card">
         <h1>Registrar coach</h1>
 
-        <p className="clients-description">
+        <p className="entrenadores-description">
           Cree un nuevo coach ingresando su nombre completo, especialidad y correo.
         </p>
 
         {errorMessage && <div className="alert error">{errorMessage}</div>}
         {successMessage && <div className="alert success">{successMessage}</div>}
 
-        <form onSubmit={handleSubmit} className="clients-form">
+        <form onSubmit={handleSubmit} className="entrenadores-form">
           <label>
             Nombre completo
             <input
@@ -140,16 +140,16 @@ function Entrenadores() {
         </form>
       </section>
 
-      <section className="clients-list-card">
+      <section className="entrenadores-list-card">
         <h2>Coaches registrados</h2>
 
         {loading ? (
-          <p>Cargando coaches...</p>
+          <p className="mensaje-info">Cargando coaches...</p>
         ) : coaches.length === 0 ? (
-          <p>No hay coaches registrados.</p>
+          <p className="mensaje-info">No hay coaches registrados.</p>
         ) : (
-          <div className="clients-table-wrapper">
-            <table className="clients-table">
+          <div className="entrenadores-table-wrapper">
+            <table className="entrenadores-table">
               <thead>
                 <tr>
                   <th>ID</th>

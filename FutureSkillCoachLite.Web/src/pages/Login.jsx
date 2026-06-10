@@ -1,44 +1,50 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getClients } from "../api/clientApi";
 
 function Login() {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [cargando, setCargando] = useState(false);
+
   const navigate = useNavigate();
 
   const iniciarSesion = async (e) => {
     e.preventDefault();
     setError("");
+    setCargando(true);
 
     try {
-      const respuesta = await fetch("https://localhost:5001/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: usuario,
-          password: password,
-        }),
-      });
-
-      if (!respuesta.ok) {
-        setError("Usuario o contraseña incorrectos");
+      if (!usuario.trim() || !password.trim()) {
+        setError("Debe ingresar usuario y contraseña");
+        setCargando(false);
         return;
       }
 
-      const datos = await respuesta.json();
+      const clientes = await getClients();
 
-      localStorage.setItem("token", datos.token);
+      const clienteEncontrado = clientes.find(
+        (cliente) =>
+          cliente.email &&
+          cliente.email.toLowerCase() === usuario.trim().toLowerCase()
+      );
 
-      
-      localStorage.setItem("usuario", JSON.stringify(datos.user));
+      if (!clienteEncontrado) {
+        setError("No existe un cliente con ese correo");
+        setCargando(false);
+        return;
+      }
 
-   
+      localStorage.setItem("cliente", JSON.stringify(clienteEncontrado));
+      localStorage.setItem("usuario", JSON.stringify(clienteEncontrado));
+
       navigate("/perfil");
     } catch (error) {
-      setError("Error al conectar con el servidor");
+      console.error(error);
+      setError("Error al conectar con el backend");
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -50,7 +56,7 @@ function Login() {
         <form className="formulario" onSubmit={iniciarSesion}>
           <input
             type="text"
-            placeholder="Usuario"
+            placeholder="Correo del cliente"
             value={usuario}
             onChange={(e) => setUsuario(e.target.value)}
           />
@@ -64,7 +70,9 @@ function Login() {
 
           {error && <p className="error-login">{error}</p>}
 
-          <button type="submit">Ingresar</button>
+          <button type="submit" disabled={cargando}>
+            {cargando ? "Ingresando..." : "Ingresar"}
+          </button>
         </form>
       </div>
     </section>
