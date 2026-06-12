@@ -23,6 +23,11 @@ public class ClientService : IClientService
         return await _clientRepository.GetByIdAsync(clientId);
     }
 
+    public async Task<Client?> GetByEmailAsync(string email)
+    {
+        return await _clientRepository.GetByEmailAsync(email);
+    }
+
     public async Task<Client> CreateAsync(Client client)
     {
         var emailExists = await _clientRepository.ExistsByEmailAsync(client.Email);

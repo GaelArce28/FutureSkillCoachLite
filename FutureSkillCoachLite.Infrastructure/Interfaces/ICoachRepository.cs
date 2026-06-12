@@ -1,18 +1,20 @@
-        using FutureSkillCoachLite.Domain.Entities;
+using FutureSkillCoachLite.Domain.Entities;
 
-        namespace FutureSkillCoachLite.Infrastructure.Interfaces;
+namespace FutureSkillCoachLite.Infrastructure.Interfaces;
 
-        public interface ICoachRepository
-        {
-            Task<List<Coach>> GetAllAsync();
+public interface ICoachRepository
+{
+    Task<List<Coach>> GetAllAsync();
 
-            Task<Coach?> GetByIdAsync(int coachId);
+    Task<Coach?> GetByIdAsync(int coachId);
 
-            Task<Coach> AddAsync(Coach coach);
+    Task<Coach?> GetByEmailAsync(string email);
 
-            Task<Coach?> UpdateAsync(Coach coach);
+    Task<Coach> AddAsync(Coach coach);
 
-            Task<bool> DeleteAsync(int coachId);
+    Task<Coach?> UpdateAsync(Coach coach);
 
-            Task<bool> ExistsByEmailAsync(string email);
-        }
+    Task<bool> DeleteAsync(int coachId);
+
+    Task<bool> ExistsByEmailAsync(string email);
+}

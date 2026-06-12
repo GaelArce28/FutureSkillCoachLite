@@ -13,4 +13,5 @@
             public int CoachId { get; set; }
 
             public Coach? Coach { get; set; }
+            public string PasswordHash { get; set; } = string.Empty;
         }

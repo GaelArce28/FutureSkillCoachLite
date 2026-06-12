@@ -1,89 +1,95 @@
-        using System;
+using FutureSkillCoachLite.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
-            using FutureSkillCoachLite.Domain.Entities;
-        using Microsoft.EntityFrameworkCore;
+namespace FutureSkillCoachLite.Infrastructure.Data;
 
+public class AppDbContext : DbContext
+{
+    public AppDbContext(DbContextOptions<AppDbContext> options)
+        : base(options)
+    {
+    }
 
-        namespace FutureSkillCoachLite.Infrastructure.Data;
+    public DbSet<Coach> Coaches { get; set; }
 
-        public class AppDbContext : DbContext
+    public DbSet<Client> Clients { get; set; }
+
+    public DbSet<Appointment> Appointments { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Coach>(entity =>
         {
-            public AppDbContext(DbContextOptions<AppDbContext> options)
-                : base(options)
-            {
-            }
+            entity.HasKey(c => c.CoachId);
 
-            //uso adecuado de dbset<Entity> para cada entidad como nos ensenio la profe
-            public DbSet<Coach> Coaches { get; set; }
+            entity.Property(c => c.FullName)
+                .IsRequired()
+                .HasMaxLength(100);
 
-            public DbSet<Client> Clients { get; set; }
+            entity.Property(c => c.Specialty)
+                .IsRequired()
+                .HasMaxLength(100);
 
-            public DbSet<Appointment> Appointments { get; set; }
+            entity.Property(c => c.Email)
+                .IsRequired()
+                .HasMaxLength(100);
 
-            protected override void OnModelCreating(ModelBuilder modelBuilder)
-            {
-                base.OnModelCreating(modelBuilder);
+            entity.Property(c => c.PasswordHash)
+                .IsRequired()
+                .HasMaxLength(255)
+                .HasDefaultValue("$2a$11$8FI3dLWRnlGlkhHVxPgeTeyPvMJpqUMWPX1FsP.fNmFCYa6v7ri/y");
+        });
 
-                modelBuilder.Entity<Coach>(entity =>
-                {
-                    entity.HasKey(c => c.CoachId);
+        modelBuilder.Entity<Client>(entity =>
+        {
+            entity.HasKey(c => c.ClientId);
 
-                    entity.Property(c => c.FullName)
-                        .IsRequired()
-                        .HasMaxLength(100);
+            entity.Property(c => c.FullName)
+                .IsRequired()
+                .HasMaxLength(100);
 
-                    entity.Property(c => c.Specialty)
-                        .IsRequired()
-                        .HasMaxLength(100);
+            entity.Property(c => c.Email)
+                .IsRequired()
+                .HasMaxLength(100);
 
-                    entity.Property(c => c.Email)
-                        .IsRequired()
-                        .HasMaxLength(100);
-                });
+            entity.Property(c => c.Goal)
+                .IsRequired()
+                .HasMaxLength(200);
 
-                modelBuilder.Entity<Client>(entity =>
-                {
-                    entity.HasKey(c => c.ClientId);
+            entity.Property(c => c.PasswordHash)
+                .IsRequired()
+                .HasMaxLength(255)
+                .HasDefaultValue("$2a$11$8FI3dLWRnlGlkhHVxPgeTeyPvMJpqUMWPX1FsP.fNmFCYa6v7ri/y");
 
-                    entity.Property(c => c.FullName)
-                        .IsRequired()
-                        .HasMaxLength(100);
+            entity.HasOne(c => c.Coach)
+                .WithMany()
+                .HasForeignKey(c => c.CoachId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
 
-                    entity.Property(c => c.Email)
-                        .IsRequired()
-                        .HasMaxLength(100);
+        modelBuilder.Entity<Appointment>(entity =>
+        {
+            entity.HasKey(a => a.AppointmentId);
 
-                    entity.Property(c => c.Goal)
-                        .IsRequired()
-                        .HasMaxLength(200);
+            entity.Property(a => a.Topic)
+                .IsRequired()
+                .HasMaxLength(150);
 
-                    entity.HasOne(c => c.Coach)
-                        .WithMany()
-                        .HasForeignKey(c => c.CoachId)
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
+            entity.Property(a => a.Status)
+                .IsRequired()
+                .HasMaxLength(50);
 
-                modelBuilder.Entity<Appointment>(entity =>
-                {
-                    entity.HasKey(a => a.AppointmentId);
+            entity.HasOne(a => a.Client)
+                .WithMany()
+                .HasForeignKey(a => a.ClientId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-                    entity.Property(a => a.Topic)
-                        .IsRequired()
-                        .HasMaxLength(150);
-
-                    entity.Property(a => a.Status)
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    entity.HasOne(a => a.Client)
-                        .WithMany()
-                        .HasForeignKey(a => a.ClientId)
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    entity.HasOne(a => a.Coach)
-                        .WithMany()
-                        .HasForeignKey(a => a.CoachId)
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-            }
-        }
+            entity.HasOne(a => a.Coach)
+                .WithMany()
+                .HasForeignKey(a => a.CoachId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+    }
+}

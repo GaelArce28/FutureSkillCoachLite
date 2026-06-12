@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getClients } from "../api/clientApi";
+import { login } from "../api/authApi";
 
 function Login() {
   const [usuario, setUsuario] = useState("");
@@ -17,32 +17,34 @@ function Login() {
 
     try {
       if (!usuario.trim() || !password.trim()) {
-        setError("Debe ingresar usuario y contraseña");
-        setCargando(false);
+        setError("Debe ingresar correo y contraseña");
         return;
       }
 
-      const clientes = await getClients();
+      const user = await login(usuario.trim(), password);
 
-      const clienteEncontrado = clientes.find(
-        (cliente) =>
-          cliente.email &&
-          cliente.email.toLowerCase() === usuario.trim().toLowerCase()
-      );
+      localStorage.removeItem("cliente");
+      localStorage.removeItem("coach");
+      localStorage.removeItem("usuario");
+      localStorage.removeItem("token");
 
-      if (!clienteEncontrado) {
-        setError("No existe un cliente con ese correo");
-        setCargando(false);
+      localStorage.setItem("usuario", JSON.stringify(user));
+
+      if (user.role === "Client") {
+        localStorage.setItem("cliente", JSON.stringify(user));
+        navigate("/perfil");
         return;
       }
 
-      localStorage.setItem("cliente", JSON.stringify(clienteEncontrado));
-      localStorage.setItem("usuario", JSON.stringify(clienteEncontrado));
+      if (user.role === "Coach") {
+        localStorage.setItem("coach", JSON.stringify(user));
+        navigate("/mis-clientes");
+        return;
+      }
 
-      navigate("/perfil");
+      navigate("/");
     } catch (error) {
-      console.error(error);
-      setError("Error al conectar con el backend");
+      setError(error.message || "Error al iniciar sesión");
     } finally {
       setCargando(false);
     }
@@ -55,8 +57,8 @@ function Login() {
 
         <form className="formulario" onSubmit={iniciarSesion}>
           <input
-            type="text"
-            placeholder="Correo del cliente"
+            type="email"
+            placeholder="Correo"
             value={usuario}
             onChange={(e) => setUsuario(e.target.value)}
           />

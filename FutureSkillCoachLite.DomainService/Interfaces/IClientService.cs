@@ -8,6 +8,8 @@ public interface IClientService
 
     Task<Client?> GetByIdAsync(int clientId);
 
+    Task<Client?> GetByEmailAsync(string email);
+
     Task<Client> CreateAsync(Client client);
 
     Task<Client?> UpdateAsync(Client client);

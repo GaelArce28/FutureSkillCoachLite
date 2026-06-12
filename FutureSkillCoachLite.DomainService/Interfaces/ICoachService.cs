@@ -1,17 +1,18 @@
-using System;
-    using FutureSkillCoachLite.Domain.Entities;
+using FutureSkillCoachLite.Domain.Entities;
 
-        namespace FutureSkillCoachLite.DomainService.Interfaces;
+namespace FutureSkillCoachLite.DomainService.Interfaces;
 
-        public interface ICoachService
-        {
-            Task<List<Coach>> GetAllAsync();
+public interface ICoachService
+{
+    Task<List<Coach>> GetAllAsync();
 
-            Task<Coach?> GetByIdAsync(int coachId);
+    Task<Coach?> GetByIdAsync(int coachId);
 
-            Task<Coach> CreateAsync(Coach coach);
+    Task<Coach?> GetByEmailAsync(string email);
 
-            Task<Coach?> UpdateAsync(Coach coach);
+    Task<Coach> CreateAsync(Coach coach);
 
-            Task<bool> DeleteAsync(int coachId);
-        }
+    Task<Coach?> UpdateAsync(Coach coach);
+
+    Task<bool> DeleteAsync(int coachId);
+}

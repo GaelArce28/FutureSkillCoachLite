@@ -29,6 +29,13 @@ public class ClientRepository : IClientRepository
             .FirstOrDefaultAsync(client => client.ClientId == clientId);
     }
 
+    public async Task<Client?> GetByEmailAsync(string email)
+    {
+        return await _context.Clients
+            .Include(client => client.Coach)
+            .FirstOrDefaultAsync(client => client.Email.ToLower() == email.ToLower());
+    }
+
     public async Task<Client> AddAsync(Client client)
     {
         _context.Clients.Add(client);
@@ -51,6 +58,7 @@ public class ClientRepository : IClientRepository
         existingClient.Email = client.Email;
         existingClient.Goal = client.Goal;
         existingClient.CoachId = client.CoachId;
+        existingClient.PasswordHash = client.PasswordHash;
 
         await _context.SaveChangesAsync();
 

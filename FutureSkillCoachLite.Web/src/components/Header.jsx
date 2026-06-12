@@ -1,11 +1,27 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { getCurrentUser, logout } from "../auth/session";
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const usuario = getCurrentUser();
+  const role = usuario?.role || usuario?.rol || usuario?.userRole || null;
+
+  const esCliente = role?.toLowerCase() === "client";
+  const esCoach = role?.toLowerCase() === "coach";
+
   const cerrarMenu = () => {
     setMenuOpen(false);
+  };
+
+  const cerrarSesion = () => {
+    logout();
+    setMenuOpen(false);
+    navigate("/login");
   };
 
   return (
@@ -26,14 +42,39 @@ function Header() {
 
       <nav className={`nav ${menuOpen ? "nav-open" : ""}`}>
         <Link to="/" onClick={cerrarMenu}>Inicio</Link>
-        <Link to="/clientes" onClick={cerrarMenu}>Clientes</Link>
-        <Link to="/citas" onClick={cerrarMenu}>Citas</Link>
-        <Link to="/actividades" onClick={cerrarMenu}>Actividades</Link>
-        <Link to="/informacion" onClick={cerrarMenu}>Información</Link>
-        <Link to="/entrenadores" onClick={cerrarMenu}>Entrenadores</Link>
-        <Link to="/perfil" onClick={cerrarMenu}>Perfil</Link>
-        <Link to="/login" onClick={cerrarMenu}>Login</Link>
-        <Link to="/mis-clientes" onClick={cerrarMenu}>Mis clientes</Link>
+
+        {!usuario && (
+          <>
+            <Link to="/clientes" onClick={cerrarMenu}>Registrar</Link>
+            <Link to="/entrenadores" onClick={cerrarMenu}>Entrenadores</Link>
+            <Link to="/actividades" onClick={cerrarMenu}>Actividades</Link>
+            <Link to="/informacion" onClick={cerrarMenu}>Información</Link>
+            <Link to="/login" onClick={cerrarMenu}>Login</Link>
+          </>
+        )}
+
+        {esCliente && (
+          <>
+            <Link to="/perfil" onClick={cerrarMenu}>Perfil</Link>
+            <Link to="/citas" onClick={cerrarMenu}>Citas</Link>
+            <Link to="/actividades" onClick={cerrarMenu}>Actividades</Link>
+            <Link to="/informacion" onClick={cerrarMenu}>Información</Link>
+            <button type="button" className="nav-button" onClick={cerrarSesion}>
+              Cerrar sesión
+            </button>
+          </>
+        )}
+
+        {esCoach && (
+          <>
+            <Link to="/mis-clientes" onClick={cerrarMenu}>Mis clientes</Link>
+            <Link to="/citas" onClick={cerrarMenu}>Citas</Link>
+            <Link to="/informacion" onClick={cerrarMenu}>Información</Link>
+            <button type="button" className="nav-button" onClick={cerrarSesion}>
+              Cerrar sesión
+            </button>
+          </>
+        )}
       </nav>
     </header>
   );

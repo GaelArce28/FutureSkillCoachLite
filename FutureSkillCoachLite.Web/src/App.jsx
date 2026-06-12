@@ -13,6 +13,7 @@ import Citas from "./pages/Citas";
 import ClientsPage from "./pages/ClientsPage";
 import Entrenadores from "./pages/Entrenadores";
 import CoachClientsPage from "./pages/CoachClientsPage";
+import ProtectedRoute from "./auth/ProtectedRoute";
 
 function App() {
   return (
@@ -25,13 +26,37 @@ function App() {
             <Route path="/" element={<Inicio />} />
             <Route path="/actividades" element={<Actividades />} />
             <Route path="/informacion" element={<Informacion />} />
-            <Route path="/perfil" element={<Perfil />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/citas" element={<Citas />} />
             <Route path="/clientes" element={<ClientsPage />} />
             <Route path="/clients" element={<ClientsPage />} />
             <Route path="/entrenadores" element={<Entrenadores />} />
-            <Route path="/mis-clientes" element={<CoachClientsPage />} />
+
+            <Route
+              path="/perfil"
+              element={
+                <ProtectedRoute allowedRoles={["Client"]}>
+                  <Perfil />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/citas"
+              element={
+                <ProtectedRoute allowedRoles={["Client", "Coach"]}>
+                  <Citas />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/mis-clientes"
+              element={
+                <ProtectedRoute allowedRoles={["Coach"]}>
+                  <CoachClientsPage />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </main>
 

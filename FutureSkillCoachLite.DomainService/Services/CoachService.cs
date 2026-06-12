@@ -1,4 +1,4 @@
-            using FutureSkillCoachLite.Domain.Entities;
+using FutureSkillCoachLite.Domain.Entities;
 using FutureSkillCoachLite.DomainService.Interfaces;
 using FutureSkillCoachLite.Infrastructure.Interfaces;
 
@@ -21,6 +21,11 @@ public class CoachService : ICoachService
     public async Task<Coach?> GetByIdAsync(int coachId)
     {
         return await _coachRepository.GetByIdAsync(coachId);
+    }
+
+    public async Task<Coach?> GetByEmailAsync(string email)
+    {
+        return await _coachRepository.GetByEmailAsync(email);
     }
 
     public async Task<Coach> CreateAsync(Coach coach)

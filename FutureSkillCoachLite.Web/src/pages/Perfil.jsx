@@ -2,32 +2,16 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCoaches } from "../api/coachApi";
 import { updateClient, deleteClient } from "../api/clientApi";
+import { getCurrentUser, logout } from "../auth/session";
 import "../App.css";
-
-function leerLocalStorage(clave, valorDefecto = null) {
-  const valor = localStorage.getItem(clave);
-
-  if (!valor || valor === "undefined" || valor === "null") {
-    return valorDefecto;
-  }
-
-  try {
-    return JSON.parse(valor);
-  } catch (error) {
-    console.error(`Error leyendo ${clave} desde localStorage:`, error);
-    localStorage.removeItem(clave);
-    return valorDefecto;
-  }
-}
 
 function Perfil() {
   const navigate = useNavigate();
 
-  const clienteGuardado = leerLocalStorage("cliente", null);
-  const usuarioGuardado = leerLocalStorage("usuario", null);
+  const usuarioGuardado = getCurrentUser();
+  const clienteGuardado = JSON.parse(localStorage.getItem("cliente") || "null");
 
   const clienteInicial = clienteGuardado || usuarioGuardado || {};
-  const usuarioInicial = usuarioGuardado || clienteInicial || {};
 
   const [cliente, setCliente] = useState(clienteInicial);
   const [coachNombre, setCoachNombre] = useState("No disponible");
@@ -40,14 +24,15 @@ function Perfil() {
     email: clienteInicial.email || clienteInicial.correo || "",
     goal: clienteInicial.goal || clienteInicial.objetivo || "",
     coachId: clienteInicial.coachId || "",
+    password: "",
   });
 
   const clienteId = cliente.clientId || cliente.id || null;
 
   const rolUsuario = String(
-    usuarioInicial.role ||
-      usuarioInicial.rol ||
-      usuarioInicial.userRole ||
+    usuarioGuardado?.role ||
+      usuarioGuardado?.rol ||
+      usuarioGuardado?.userRole ||
       "Client"
   );
 
@@ -56,8 +41,8 @@ function Perfil() {
     rolUsuario.toLowerCase() === "administrator";
 
   const usuarioClientId =
-    usuarioInicial.clientId ||
-    usuarioInicial.id ||
+    usuarioGuardado?.clientId ||
+    usuarioGuardado?.id ||
     clienteId;
 
   const esPropietario =
@@ -123,27 +108,39 @@ function Perfil() {
       return;
     }
 
+    if (!formData.password.trim()) {
+      setErrorMessage("Debe ingresar la contraseña para guardar cambios.");
+      return;
+    }
+
     try {
+      const clienteRequest = {
+        ...cliente,
+        fullName: formData.fullName,
+        email: formData.email,
+        goal: formData.goal,
+        coachId: esAdmin ? Number(formData.coachId) : cliente.coachId,
+        password: formData.password,
+      };
+
       const clienteActualizado = {
         ...cliente,
         fullName: formData.fullName,
         email: formData.email,
         goal: formData.goal,
-        coachId: esAdmin
-          ? Number(formData.coachId)
-          : cliente.coachId,
+        coachId: esAdmin ? Number(formData.coachId) : cliente.coachId,
       };
 
-      await updateClient(clienteId, clienteActualizado);
+      await updateClient(clienteId, clienteRequest);
 
       setCliente(clienteActualizado);
       localStorage.setItem("cliente", JSON.stringify(clienteActualizado));
 
       if (localStorage.getItem("usuario")) {
         const usuarioActualizado = {
-          ...usuarioInicial,
+          ...usuarioGuardado,
           ...clienteActualizado,
-          role: usuarioInicial.role || usuarioInicial.rol || rolUsuario,
+          role: usuarioGuardado?.role || usuarioGuardado?.rol || rolUsuario,
         };
 
         localStorage.setItem("usuario", JSON.stringify(usuarioActualizado));
@@ -151,6 +148,11 @@ function Perfil() {
 
       setSuccessMessage("Perfil actualizado correctamente.");
       setEditando(false);
+
+      setFormData({
+        ...formData,
+        password: "",
+      });
     } catch (error) {
       console.error("Error al guardar perfil:", error);
       setErrorMessage(error.message || "Error al actualizar el perfil.");
@@ -182,10 +184,7 @@ function Perfil() {
     try {
       await deleteClient(clienteId);
 
-      localStorage.removeItem("cliente");
-      localStorage.removeItem("usuario");
-      localStorage.removeItem("token");
-
+      logout();
       navigate("/login");
     } catch (error) {
       console.error("Error al eliminar perfil:", error);
@@ -194,10 +193,7 @@ function Perfil() {
   }
 
   function cerrarSesion() {
-    localStorage.removeItem("cliente");
-    localStorage.removeItem("usuario");
-    localStorage.removeItem("token");
-
+    logout();
     navigate("/login");
   }
 
@@ -227,9 +223,11 @@ function Perfil() {
 
       <div className="perfil-card">
         <div className="perfil-avatar">
-          {cliente.fullName?.charAt(0) ||
-            cliente.nombre?.charAt(0) ||
-            "C"}
+          <span>
+            {(cliente.fullName || cliente.nombre || "C")
+              .charAt(0)
+              .toUpperCase()}
+          </span>
         </div>
 
         <h3>{cliente.fullName || cliente.nombre || "Cliente"}</h3>
@@ -261,8 +259,7 @@ function Perfil() {
               </p>
 
               <p>
-                <strong>Nombre del entrenador:</strong>{" "}
-                {coachNombre}
+                <strong>Nombre del entrenador:</strong> {coachNombre}
               </p>
             </div>
 
@@ -323,6 +320,17 @@ function Perfil() {
             </label>
 
             <label>
+              Contraseña
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Ingrese su contraseña para guardar"
+              />
+            </label>
+
+            <label>
               ID del entrenador
               <input
                 type="number"
@@ -347,7 +355,15 @@ function Perfil() {
               <button
                 type="button"
                 className="perfil-btn-secundario"
-                onClick={() => setEditando(false)}
+                onClick={() => {
+                  setEditando(false);
+                  setErrorMessage("");
+                  setSuccessMessage("");
+                  setFormData({
+                    ...formData,
+                    password: "",
+                  });
+                }}
               >
                 Cancelar
               </button>

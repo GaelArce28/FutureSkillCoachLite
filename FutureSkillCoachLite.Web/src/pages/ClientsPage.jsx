@@ -7,6 +7,7 @@ function ClientsPage() {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
+    password: "",
     goal: "",
     coachId: "",
   });
@@ -62,6 +63,7 @@ function ClientsPage() {
     if (
       !formData.fullName.trim() ||
       !formData.email.trim() ||
+      !formData.password.trim() ||
       !formData.goal.trim() ||
       !formData.coachId
     ) {
@@ -78,6 +80,7 @@ function ClientsPage() {
       const clientToCreate = {
         fullName: formData.fullName,
         email: formData.email,
+        password: formData.password,
         goal: formData.goal,
         coachId: Number(formData.coachId),
       };
@@ -90,6 +93,7 @@ function ClientsPage() {
       setFormData({
         fullName: "",
         email: "",
+        password: "",
         goal: "",
         coachId: "",
       });
@@ -103,9 +107,9 @@ function ClientsPage() {
       <section className="clientes-form-card">
         <h1>Registrar cliente</h1>
 
-        <p className="clientes-description">
-          Cree un nuevo cliente y asígnelo a un coach.
-        </p>
+       <p className="clientes-description">
+        Cree un nuevo cliente, asígnelo a un coach y defina su contraseña de acceso.
+      </p>
 
         {errorMessage && <div className="alert error">{errorMessage}</div>}
         {successMessage && <div className="alert success">{successMessage}</div>}
@@ -130,6 +134,17 @@ function ClientsPage() {
               value={formData.email}
               onChange={handleChange}
               placeholder="cliente@email.com"
+            />
+          </label>
+
+          <label>
+            Contraseña
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Ingrese una contraseña"
             />
           </label>
 
