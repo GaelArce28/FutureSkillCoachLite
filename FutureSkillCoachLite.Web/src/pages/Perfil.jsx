@@ -1,29 +1,16 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getCurrentUser, logout } from "../auth/session";
 
 function Perfil() {
-  const [cliente, setCliente] = useState(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const clienteGuardado = localStorage.getItem("cliente");
-    const token = localStorage.getItem("token");
-
-    if (!clienteGuardado || !token) {
-      navigate("/login");
-      return;
-    }
-
-    setCliente(JSON.parse(clienteGuardado));
-  }, [navigate]);
+  const usuario = getCurrentUser();
 
   const cerrarSesion = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("cliente");
+    logout();
     navigate("/login");
   };
 
-  if (!cliente) {
+  if (!usuario) {
     return (
       <section className="perfil">
         <h2>Cargando perfil...</h2>
@@ -35,34 +22,30 @@ function Perfil() {
     <section className="perfil">
       <div className="perfil-card">
         <div className="perfil-avatar">
-          <span>{cliente.nombre?.charAt(0).toUpperCase()}</span>
+          <span>{usuario.fullName?.charAt(0).toUpperCase()}</span>
         </div>
 
         <h2>Perfil del cliente</h2>
 
         <div className="perfil-info">
           <p>
-            <strong>Nombre:</strong> {cliente.nombre}
+            <strong>Nombre:</strong> {usuario.fullName}
           </p>
 
           <p>
-            <strong>Usuario:</strong> {cliente.usuario}
+            <strong>Correo:</strong> {usuario.email}
           </p>
 
           <p>
-            <strong>Correo:</strong> {cliente.correo}
+            <strong>Rol:</strong> {usuario.role}
           </p>
 
           <p>
-            <strong>Teléfono:</strong> {cliente.telefono}
+            <strong>ID Cliente:</strong> {usuario.clientId || usuario.id}
           </p>
 
           <p>
-            <strong>Membresía:</strong> {cliente.membresia}
-          </p>
-
-          <p>
-            <strong>Fecha de registro:</strong> {cliente.fechaRegistro}
+            <strong>ID Coach asignado:</strong> {usuario.coachId}
           </p>
         </div>
 

@@ -775,3 +775,16 @@ body {
   color: #9aa3aa;
   font-size: 14px;
 }
+
+.nav-button {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.nav-button:hover {
+  text-decoration: underline;
+}

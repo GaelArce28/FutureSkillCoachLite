@@ -7,6 +7,7 @@ function Entrenadores() {
     fullName: "",
     specialty: "",
     email: "",
+    password: "",
   });
 
   const [coaches, setCoaches] = useState([]);
@@ -50,6 +51,7 @@ function Entrenadores() {
       fullName: "",
       specialty: "",
       email: "",
+      password: "",
     });
   }
 
@@ -62,7 +64,8 @@ function Entrenadores() {
     if (
       !formData.fullName.trim() ||
       !formData.specialty.trim() ||
-      !formData.email.trim()
+      !formData.email.trim() ||
+      !formData.password.trim()
     ) {
       setErrorMessage("Todos los campos son obligatorios.");
       return;
@@ -78,6 +81,7 @@ function Entrenadores() {
         fullName: formData.fullName,
         specialty: formData.specialty,
         email: formData.email,
+        password: formData.password,
       };
 
       const createdCoach = await createCoach(coachToCreate);
@@ -96,7 +100,7 @@ function Entrenadores() {
         <h1>Registrar coach</h1>
 
         <p className="clients-description">
-          Cree un nuevo coach ingresando su nombre completo, especialidad y correo.
+          Cree un nuevo coach ingresando su nombre, especialidad, correo y contraseña.
         </p>
 
         {errorMessage && <div className="alert error">{errorMessage}</div>}
@@ -133,6 +137,17 @@ function Entrenadores() {
               value={formData.email}
               onChange={handleChange}
               placeholder="coach@email.com"
+            />
+          </label>
+
+          <label>
+            Contraseña
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Ingrese una contraseña"
             />
           </label>
 
