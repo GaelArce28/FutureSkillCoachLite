@@ -28,7 +28,7 @@ function Header() {
     <header className="header">
       <Link to="/" className="logo-link" onClick={cerrarMenu}>
         <h1 className="logo">
-          FutureSkill <span>Coach Lite</span>
+          El <span>Dorado</span>
         </h1>
       </Link>
 

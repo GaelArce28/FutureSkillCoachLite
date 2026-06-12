@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createClient, getClients } from "../api/clientApi";
 import { getCoaches } from "../api/coachApi";
-import "../styles/Clients.css";
+import "../App.css";
 
 function ClientsPage() {
   const [formData, setFormData] = useState({
@@ -103,17 +103,18 @@ function ClientsPage() {
   }
 
   return (
-    <main className="clients-page">
-      <section className="clients-card">
+    <main className="clientes-admin-page">
+      <section className="clientes-form-card">
         <h1>Registrar cliente</h1>
-        <p className="clients-description">
-          Cree un nuevo cliente, asigne un coach y defina su contraseña de acceso.
-        </p>
+
+       <p className="clientes-description">
+        Cree un nuevo cliente, asígnelo a un coach y defina su contraseña de acceso.
+      </p>
 
         {errorMessage && <div className="alert error">{errorMessage}</div>}
         {successMessage && <div className="alert success">{successMessage}</div>}
 
-        <form onSubmit={handleSubmit} className="clients-form">
+        <form onSubmit={handleSubmit} className="clientes-form">
           <label>
             Nombre completo
             <input
@@ -166,6 +167,7 @@ function ClientsPage() {
               onChange={handleChange}
             >
               <option value="">Seleccione un coach</option>
+
               {coaches.map((coach) => (
                 <option key={coach.coachId} value={coach.coachId}>
                   {coach.fullName} - {coach.specialty}
@@ -178,16 +180,16 @@ function ClientsPage() {
         </form>
       </section>
 
-      <section className="clients-list-card">
+      <section className="clientes-list-card">
         <h2>Clientes registrados</h2>
 
         {loading ? (
-          <p>Cargando clientes...</p>
+          <p className="mensaje-info">Cargando clientes...</p>
         ) : clients.length === 0 ? (
-          <p>No hay clientes registrados.</p>
+          <p className="mensaje-info">No hay clientes registrados.</p>
         ) : (
-          <div className="clients-table-wrapper">
-            <table className="clients-table">
+          <div className="clientes-table-wrapper">
+            <table className="clientes-table">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -197,6 +199,7 @@ function ClientsPage() {
                   <th>Coach</th>
                 </tr>
               </thead>
+
               <tbody>
                 {clients.map((client) => (
                   <tr key={client.clientId}>
