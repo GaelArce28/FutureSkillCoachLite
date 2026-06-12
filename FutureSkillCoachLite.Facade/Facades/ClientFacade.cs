@@ -56,7 +56,8 @@ public class ClientFacade : IClientFacade
             FullName = request.FullName,
             Email = request.Email,
             Goal = request.Goal,
-            CoachId = request.CoachId
+            CoachId = request.CoachId,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
         };
 
         var createdClient = await _clientService.CreateAsync(client);
@@ -80,7 +81,8 @@ public class ClientFacade : IClientFacade
             FullName = request.FullName,
             Email = request.Email,
             Goal = request.Goal,
-            CoachId = request.CoachId
+            CoachId = request.CoachId,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
         };
 
         var updatedClient = await _clientService.UpdateAsync(client);

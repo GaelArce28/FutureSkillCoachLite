@@ -1,4 +1,3 @@
-using System;
 using FutureSkillCoachLite.Domain.Entities;
 using FutureSkillCoachLite.DomainService.Interfaces;
 using FutureSkillCoachLite.Dto.Coaches;
@@ -48,11 +47,17 @@ public class CoachFacade : ICoachFacade
 
     public async Task<CoachResponseDto> CreateAsync(CreateCoachRequestDto request)
     {
+        if (string.IsNullOrWhiteSpace(request.Password))
+        {
+            throw new InvalidOperationException("La contraseña es obligatoria.");
+        }
+
         var coach = new Coach
         {
             FullName = request.FullName,
             Specialty = request.Specialty,
-            Email = request.Email
+            Email = request.Email,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
         };
 
         var createdCoach = await _coachService.CreateAsync(coach);
@@ -68,12 +73,22 @@ public class CoachFacade : ICoachFacade
 
     public async Task<CoachResponseDto?> UpdateAsync(int coachId, UpdateCoachRequestDto request)
     {
+        var currentCoach = await _coachService.GetByIdAsync(coachId);
+
+        if (currentCoach == null)
+        {
+            return null;
+        }
+
         var coach = new Coach
         {
             CoachId = coachId,
             FullName = request.FullName,
             Specialty = request.Specialty,
-            Email = request.Email
+            Email = request.Email,
+            PasswordHash = string.IsNullOrWhiteSpace(request.Password)
+                ? currentCoach.PasswordHash
+                : BCrypt.Net.BCrypt.HashPassword(request.Password)
         };
 
         var updatedCoach = await _coachService.UpdateAsync(coach);

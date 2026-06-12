@@ -1,44 +1,52 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { login } from "../api/authApi";
 
 function Login() {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [cargando, setCargando] = useState(false);
+
   const navigate = useNavigate();
 
   const iniciarSesion = async (e) => {
     e.preventDefault();
     setError("");
+    setCargando(true);
 
     try {
-      const respuesta = await fetch("https://localhost:5001/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: usuario,
-          password: password,
-        }),
-      });
-
-      if (!respuesta.ok) {
-        setError("Usuario o contraseña incorrectos");
+      if (!usuario.trim() || !password.trim()) {
+        setError("Debe ingresar correo y contraseña");
         return;
       }
 
-      const datos = await respuesta.json();
+      const user = await login(usuario.trim(), password);
 
-      localStorage.setItem("token", datos.token);
+      localStorage.removeItem("cliente");
+      localStorage.removeItem("coach");
+      localStorage.removeItem("usuario");
+      localStorage.removeItem("token");
 
-      
-      localStorage.setItem("usuario", JSON.stringify(datos.user));
+      localStorage.setItem("usuario", JSON.stringify(user));
 
-   
-      navigate("/perfil");
+      if (user.role === "Client") {
+        localStorage.setItem("cliente", JSON.stringify(user));
+        navigate("/perfil");
+        return;
+      }
+
+      if (user.role === "Coach") {
+        localStorage.setItem("coach", JSON.stringify(user));
+        navigate("/mis-clientes");
+        return;
+      }
+
+      navigate("/");
     } catch (error) {
-      setError("Error al conectar con el servidor");
+      setError(error.message || "Error al iniciar sesión");
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -49,8 +57,8 @@ function Login() {
 
         <form className="formulario" onSubmit={iniciarSesion}>
           <input
-            type="text"
-            placeholder="Usuario"
+            type="email"
+            placeholder="Correo"
             value={usuario}
             onChange={(e) => setUsuario(e.target.value)}
           />
@@ -64,7 +72,9 @@ function Login() {
 
           {error && <p className="error-login">{error}</p>}
 
-          <button type="submit">Ingresar</button>
+          <button type="submit" disabled={cargando}>
+            {cargando ? "Ingresando..." : "Ingresar"}
+          </button>
         </form>
       </div>
     </section>

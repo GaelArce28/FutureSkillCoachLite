@@ -1,4 +1,3 @@
-using System;
 using FutureSkillCoachLite.Domain.Entities;
 using FutureSkillCoachLite.Infrastructure.Data;
 using FutureSkillCoachLite.Infrastructure.Interfaces;
@@ -28,6 +27,12 @@ public class CoachRepository : ICoachRepository
             .FirstOrDefaultAsync(coach => coach.CoachId == coachId);
     }
 
+    public async Task<Coach?> GetByEmailAsync(string email)
+    {
+        return await _context.Coaches
+            .FirstOrDefaultAsync(coach => coach.Email.ToLower() == email.ToLower());
+    }
+
     public async Task<Coach> AddAsync(Coach coach)
     {
         _context.Coaches.Add(coach);
@@ -49,6 +54,7 @@ public class CoachRepository : ICoachRepository
         existingCoach.FullName = coach.FullName;
         existingCoach.Specialty = coach.Specialty;
         existingCoach.Email = coach.Email;
+        existingCoach.PasswordHash = coach.PasswordHash;
 
         await _context.SaveChangesAsync();
 
