@@ -1,4 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5140";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5140/api";
+console.log("API_URL usado:", API_URL);
 
 async function readJsonResponse(response) {
   const text = await response.text();
@@ -15,7 +16,7 @@ async function readJsonResponse(response) {
 }
 
 export async function login(email, password) {
-  const response = await fetch(`${API_URL}/api/auth/login`, {
+  const response = await fetch(`${API_URL}/Auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

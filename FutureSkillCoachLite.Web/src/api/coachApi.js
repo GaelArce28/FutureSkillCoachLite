@@ -1,4 +1,5 @@
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5140/api";
+console.log("API_URL usado:", API_URL);
 
 async function readJsonResponse(response) {
   const text = await response.text();

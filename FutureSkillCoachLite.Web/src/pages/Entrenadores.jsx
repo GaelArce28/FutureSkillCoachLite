@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createCoach, getCoaches } from "../api/coachApi";
-import "../styles/Clients.css";
+import "../App.css";
 
 function Entrenadores() {
   const [formData, setFormData] = useState({
@@ -12,6 +12,7 @@ function Entrenadores() {
 
   const [coaches, setCoaches] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -36,10 +37,10 @@ function Entrenadores() {
   function handleChange(event) {
     const { name, value } = event.target;
 
-    setFormData({
-      ...formData,
+    setFormData((previousData) => ({
+      ...previousData,
       [name]: value,
-    });
+    }));
   }
 
   function isValidEmail(email) {
@@ -76,37 +77,48 @@ function Entrenadores() {
       return;
     }
 
+    if (formData.password.length < 6) {
+      setErrorMessage("La contraseña debe tener al menos 6 caracteres.");
+      return;
+    }
+
     try {
+      setSaving(true);
+
       const coachToCreate = {
-        fullName: formData.fullName,
-        specialty: formData.specialty,
-        email: formData.email,
+        fullName: formData.fullName.trim(),
+        specialty: formData.specialty.trim(),
+        email: formData.email.trim(),
         password: formData.password,
       };
 
-      const createdCoach = await createCoach(coachToCreate);
+      await createCoach(coachToCreate);
 
-      setCoaches((previousCoaches) => [...previousCoaches, createdCoach]);
       setSuccessMessage("Coach registrado correctamente.");
       clearForm();
+
+      await loadCoaches();
     } catch (error) {
       setErrorMessage(error.message || "Error al registrar el coach.");
+    } finally {
+      setSaving(false);
     }
   }
 
   return (
-    <main className="clients-page">
-      <section className="clients-card">
+    <main className="entrenadores-admin-page">
+      <section className="entrenadores-form-card">
         <h1>Registrar coach</h1>
 
-        <p className="clients-description">
-          Cree un nuevo coach ingresando su nombre, especialidad, correo y contraseña.
+        <p className="entrenadores-description">
+          Cree un nuevo coach ingresando su nombre completo, especialidad,
+          correo y contraseña.
         </p>
 
         {errorMessage && <div className="alert error">{errorMessage}</div>}
         {successMessage && <div className="alert success">{successMessage}</div>}
 
-        <form onSubmit={handleSubmit} className="clients-form">
+        <form onSubmit={handleSubmit} className="entrenadores-form">
           <label>
             Nombre completo
             <input
@@ -151,20 +163,22 @@ function Entrenadores() {
             />
           </label>
 
-          <button type="submit">Registrar coach</button>
+          <button type="submit" disabled={saving}>
+            {saving ? "Registrando..." : "Registrar coach"}
+          </button>
         </form>
       </section>
 
-      <section className="clients-list-card">
+      <section className="entrenadores-list-card">
         <h2>Coaches registrados</h2>
 
         {loading ? (
-          <p>Cargando coaches...</p>
+          <p className="mensaje-info">Cargando coaches...</p>
         ) : coaches.length === 0 ? (
-          <p>No hay coaches registrados.</p>
+          <p className="mensaje-info">No hay coaches registrados.</p>
         ) : (
-          <div className="clients-table-wrapper">
-            <table className="clients-table">
+          <div className="entrenadores-table-wrapper">
+            <table className="entrenadores-table">
               <thead>
                 <tr>
                   <th>ID</th>

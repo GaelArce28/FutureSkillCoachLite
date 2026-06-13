@@ -1,129 +1,60 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getCoaches } from "../api/coachApi";
+import "../App.css";
 
 function Informacion() {
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [loadingCoaches, setLoadingCoaches] = useState(true);
+  const [errorCoaches, setErrorCoaches] = useState("");
+  const [entrenadores, setEntrenadores] = useState([]);
 
-  const [entrenadores, setEntrenadores] = useState([
-    {
-      id: 1,
-      nombre: "Carlos Ramírez",
-      actividad: "Musculación y fuerza",
-      horario: "Lunes a Viernes - 6:00 a.m. a 12:00 p.m.",
-      experiencia: "5 años de experiencia",
-    },
-    {
-      id: 2,
-      nombre: "María Fernanda López",
-      actividad: "Funcional y cardio",
-      horario: "Lunes, Miércoles y Viernes - 4:00 p.m. a 8:00 p.m.",
-      experiencia: "4 años de experiencia",
-    },
-    {
-      id: 3,
-      nombre: "José Vargas",
-      actividad: "Cross training",
-      horario: "Martes y Jueves - 5:00 p.m. a 9:00 p.m.",
-      experiencia: "6 años de experiencia",
-    },
-    {
-      id: 4,
-      nombre: "Andrés Mora",
-      actividad: "Entrenamiento personalizado",
-      horario: "Sábados - 7:00 a.m. a 1:00 p.m.",
-      experiencia: "3 años de experiencia",
-    },
-  ]);
+  useEffect(() => {
+    cargarEntrenadoresDesdeBD();
+  }, []);
 
-  const [nuevoEntrenador, setNuevoEntrenador] = useState({
-    nombre: "",
-    actividad: "",
-    horario: "",
-    experiencia: "",
-  });
+  async function cargarEntrenadoresDesdeBD() {
+    try {
+      setLoadingCoaches(true);
+      setErrorCoaches("");
 
-  const cambiarDato = (e) => {
-    const { name, value } = e.target;
+      const coachesData = await getCoaches();
 
-    setNuevoEntrenador({
-      ...nuevoEntrenador,
-      [name]: value,
-    });
-  };
+      const entrenadoresDesdeBD = coachesData.map((coach) => ({
+        id: `bd-${coach.coachId}`,
+        nombre: coach.fullName,
+        actividad: coach.specialty,
+        horario: "Horario no definido",
+        experiencia: "Experiencia no definida",
+        correo: coach.email,
+      }));
 
-  const agregarEntrenador = (e) => {
-    e.preventDefault();
-
-    const entrenador = {
-      id: entrenadores.length + 1,
-      ...nuevoEntrenador,
-    };
-
-    setEntrenadores([...entrenadores, entrenador]);
-
-    setNuevoEntrenador({
-      nombre: "",
-      actividad: "",
-      horario: "",
-      experiencia: "",
-    });
-
-    setMostrarFormulario(false);
-  };
+      setEntrenadores(entrenadoresDesdeBD);
+    } catch (error) {
+      setErrorCoaches(
+        error.message ||
+          "Error al cargar los entrenadores desde la base de datos."
+      );
+    } finally {
+      setLoadingCoaches(false);
+    }
+  }
 
   return (
     <section className="informacion">
       <div className="info-header">
         <h2>Entrenadores</h2>
         <p>Información sobre nuestros entrenadores y sus actividades.</p>
-
-        <button
-          className="btn-agregar"
-          onClick={() => setMostrarFormulario(!mostrarFormulario)}
-        >
-          {mostrarFormulario ? "Cancelar" : "Agregar entrenador"}
-        </button>
       </div>
 
-      {mostrarFormulario && (
-        <form className="form-entrenador" onSubmit={agregarEntrenador}>
-          <input
-            type="text"
-            name="nombre"
-            placeholder="Nombre del entrenador"
-            value={nuevoEntrenador.nombre}
-            onChange={cambiarDato}
-            required
-          />
+      {loadingCoaches && (
+        <p className="mensaje-info">
+          Cargando entrenadores desde la base de datos...
+        </p>
+      )}
 
-          <input
-            type="text"
-            name="actividad"
-            placeholder="Actividad que realiza"
-            value={nuevoEntrenador.actividad}
-            onChange={cambiarDato}
-            required
-          />
+      {errorCoaches && <div className="alert error">{errorCoaches}</div>}
 
-          <input
-            type="text"
-            name="horario"
-            placeholder="Horario"
-            value={nuevoEntrenador.horario}
-            onChange={cambiarDato}
-            required
-          />
-
-          <input
-            type="text"
-            name="experiencia"
-            placeholder="Experiencia"
-            value={nuevoEntrenador.experiencia}
-            onChange={cambiarDato}
-            required
-          />
-
-          <button type="submit">Guardar entrenador</button>
-        </form>
+      {!loadingCoaches && entrenadores.length === 0 && !errorCoaches && (
+        <p className="mensaje-info">No hay entrenadores registrados.</p>
       )}
 
       <div className="info-grid">
@@ -142,6 +73,12 @@ function Informacion() {
             <p>
               <strong>Experiencia:</strong> {entrenador.experiencia}
             </p>
+
+            {entrenador.correo && (
+              <p>
+                <strong>Correo:</strong> {entrenador.correo}
+              </p>
+            )}
           </div>
         ))}
       </div>

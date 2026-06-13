@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createClient, getClients } from "../api/clientApi";
 import { getCoaches } from "../api/coachApi";
-import "../styles/Clients.css";
+import "../App.css";
 
 function ClientsPage() {
   const [formData, setFormData] = useState({
@@ -15,6 +15,7 @@ function ClientsPage() {
   const [clients, setClients] = useState([]);
   const [coaches, setCoaches] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -27,13 +28,16 @@ function ClientsPage() {
       setLoading(true);
       setErrorMessage("");
 
-      const [clientsData, coachesData] = await Promise.all([
-        getClients(),
-        getCoaches(),
-      ]);
-
+      const clientsData = await getClients();
       setClients(clientsData);
-      setCoaches(coachesData);
+
+      try {
+        const coachesData = await getCoaches();
+        setCoaches(coachesData);
+      } catch {
+        setCoaches([]);
+        setErrorMessage("No se pudieron cargar los coaches.");
+      }
     } catch (error) {
       setErrorMessage(error.message || "Error al cargar la información.");
     } finally {
@@ -44,14 +48,26 @@ function ClientsPage() {
   function handleChange(event) {
     const { name, value } = event.target;
 
-    setFormData({
-      ...formData,
+    setFormData((previousData) => ({
+      ...previousData,
       [name]: value,
-    });
+    }));
   }
 
   function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  function getCoachName(client) {
+    if (client.coachName) {
+      return client.coachName;
+    }
+
+    const coach = coaches.find(
+      (coachItem) => coachItem.coachId === client.coachId
+    );
+
+    return coach ? coach.fullName : client.coachId;
   }
 
   async function handleSubmit(event) {
@@ -76,18 +92,24 @@ function ClientsPage() {
       return;
     }
 
+    if (formData.password.length < 6) {
+      setErrorMessage("La contraseña debe tener al menos 6 caracteres.");
+      return;
+    }
+
     try {
+      setSaving(true);
+
       const clientToCreate = {
-        fullName: formData.fullName,
-        email: formData.email,
+        fullName: formData.fullName.trim(),
+        email: formData.email.trim(),
         password: formData.password,
-        goal: formData.goal,
+        goal: formData.goal.trim(),
         coachId: Number(formData.coachId),
       };
 
-      const createdClient = await createClient(clientToCreate);
+      await createClient(clientToCreate);
 
-      setClients((previousClients) => [...previousClients, createdClient]);
       setSuccessMessage("Cliente registrado correctamente.");
 
       setFormData({
@@ -97,23 +119,29 @@ function ClientsPage() {
         goal: "",
         coachId: "",
       });
+
+      await loadInitialData();
     } catch (error) {
       setErrorMessage(error.message || "Error al registrar el cliente.");
+    } finally {
+      setSaving(false);
     }
   }
 
   return (
-    <main className="clients-page">
-      <section className="clients-card">
+    <main className="clientes-admin-page">
+      <section className="clientes-form-card">
         <h1>Registrar cliente</h1>
-        <p className="clients-description">
-          Cree un nuevo cliente, asigne un coach y defina su contraseña de acceso.
+
+        <p className="clientes-description">
+          Cree un nuevo cliente, asígnelo a un coach y defina su contraseña de
+          acceso.
         </p>
 
         {errorMessage && <div className="alert error">{errorMessage}</div>}
         {successMessage && <div className="alert success">{successMessage}</div>}
 
-        <form onSubmit={handleSubmit} className="clients-form">
+        <form onSubmit={handleSubmit} className="clientes-form">
           <label>
             Nombre completo
             <input
@@ -164,8 +192,10 @@ function ClientsPage() {
               name="coachId"
               value={formData.coachId}
               onChange={handleChange}
+              disabled={coaches.length === 0}
             >
               <option value="">Seleccione un coach</option>
+
               {coaches.map((coach) => (
                 <option key={coach.coachId} value={coach.coachId}>
                   {coach.fullName} - {coach.specialty}
@@ -174,20 +204,22 @@ function ClientsPage() {
             </select>
           </label>
 
-          <button type="submit">Registrar cliente</button>
+          <button type="submit" disabled={saving || coaches.length === 0}>
+            {saving ? "Registrando..." : "Registrar cliente"}
+          </button>
         </form>
       </section>
 
-      <section className="clients-list-card">
+      <section className="clientes-list-card">
         <h2>Clientes registrados</h2>
 
         {loading ? (
-          <p>Cargando clientes...</p>
+          <p className="mensaje-info">Cargando clientes...</p>
         ) : clients.length === 0 ? (
-          <p>No hay clientes registrados.</p>
+          <p className="mensaje-info">No hay clientes registrados.</p>
         ) : (
-          <div className="clients-table-wrapper">
-            <table className="clients-table">
+          <div className="clientes-table-wrapper">
+            <table className="clientes-table">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -197,6 +229,7 @@ function ClientsPage() {
                   <th>Coach</th>
                 </tr>
               </thead>
+
               <tbody>
                 {clients.map((client) => (
                   <tr key={client.clientId}>
@@ -204,7 +237,7 @@ function ClientsPage() {
                     <td>{client.fullName}</td>
                     <td>{client.email}</td>
                     <td>{client.goal}</td>
-                    <td>{client.coachName ?? client.coachId}</td>
+                    <td>{getCoachName(client)}</td>
                   </tr>
                 ))}
               </tbody>

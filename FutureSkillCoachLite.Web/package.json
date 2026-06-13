@@ -6,10 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:android": "vite build --mode android",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "android": "npm run build:android && npx cap sync android && npx cap open android"
   },
   "dependencies": {
+    "@capacitor/android": "^8.4.0",
+    "@capacitor/cli": "^8.4.0",
+    "@capacitor/core": "^8.4.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-router-dom": "^7.16.0"

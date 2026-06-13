@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getClients } from "../api/clientApi";
-import "../styles/Clients.css";
+import "../App.css";
 
 function CoachClientsPage() {
   const [clients, setClients] = useState([]);
@@ -49,23 +49,25 @@ function CoachClientsPage() {
   }
 
   return (
-    <main className="clients-page">
-      <section className="clients-list-card">
-        <h1>Mis clientes</h1>
+    <main className="clientes-admin-page">
+      <section className="clientes-list-card coach-clients-card">
+        <div className="page-title-area">
+          <h1>Mis clientes</h1>
 
-        <p className="clients-description">
-          Consulte los clientes asignados a su perfil de coach.
-        </p>
+          <p className="clientes-description">
+            Consulte los clientes asignados a su perfil de coach.
+          </p>
+        </div>
 
         {errorMessage && <div className="alert error">{errorMessage}</div>}
 
         {loading ? (
-          <p>Cargando clientes...</p>
+          <p className="mensaje-info">Cargando clientes...</p>
         ) : clients.length === 0 ? (
-          <p>No hay clientes asignados.</p>
+          <p className="mensaje-info">No hay clientes asignados.</p>
         ) : (
-          <div className="clients-table-wrapper">
-            <table className="clients-table">
+          <div className="clientes-table-wrapper">
+            <table className="clientes-table">
               <thead>
                 <tr>
                   <th>ID</th>
