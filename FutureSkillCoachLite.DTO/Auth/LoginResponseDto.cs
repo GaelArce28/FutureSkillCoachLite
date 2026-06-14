@@ -13,4 +13,8 @@ public class LoginResponseDto
     public int? ClientId { get; set; }
 
     public int? CoachId { get; set; }
+
+    public string Token { get; set; } = string.Empty;
+
+    public DateTime ExpiresAt { get; set; }
 }

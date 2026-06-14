@@ -1,11 +1,13 @@
 using FutureSkillCoachLite.Dto.Appointments;
 using FutureSkillCoachLite.Facade.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FutureSkillCoachLite.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class AppointmentsController : ControllerBase
 {
     private readonly IAppointmentFacade _appointmentFacade;

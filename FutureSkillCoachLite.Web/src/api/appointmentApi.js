@@ -6,8 +6,40 @@ async function readJsonResponse(response) {
   return text ? JSON.parse(text) : null;
 }
 
+function getAuthHeaders() {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return {};
+  }
+
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+}
+
+function handleUnauthorized(response) {
+  if (response.status === 401) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
+    localStorage.removeItem("cliente");
+    localStorage.removeItem("coach");
+
+    window.location.href = "/login";
+
+    throw new Error("Sesión expirada o no autorizada.");
+  }
+}
+
 export async function getAppointments() {
-  const response = await fetch(`${API_URL}/Appointments`);
+  const response = await fetch(`${API_URL}/Appointments`, {
+    method: "GET",
+    headers: {
+      ...getAuthHeaders(),
+    },
+  });
+
+  handleUnauthorized(response);
 
   if (response.status === 404) {
     return [];
@@ -25,9 +57,12 @@ export async function createAppointment(appointmentData) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      ...getAuthHeaders(),
     },
     body: JSON.stringify(appointmentData),
   });
+
+  handleUnauthorized(response);
 
   if (!response.ok) {
     const error = await readJsonResponse(response);
@@ -42,9 +77,12 @@ export async function updateAppointment(appointmentId, appointmentData) {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      ...getAuthHeaders(),
     },
     body: JSON.stringify(appointmentData),
   });
+
+  handleUnauthorized(response);
 
   if (!response.ok) {
     const error = await readJsonResponse(response);

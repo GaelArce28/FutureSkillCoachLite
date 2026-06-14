@@ -27,8 +27,12 @@ function Login() {
       localStorage.removeItem("coach");
       localStorage.removeItem("usuario");
       localStorage.removeItem("token");
+      
+localStorage.setItem("usuario", JSON.stringify(user));
 
-      localStorage.setItem("usuario", JSON.stringify(user));
+if (user.token) {
+  localStorage.setItem("token", user.token);
+}
 
       if (user.role === "Client") {
         localStorage.setItem("cliente", JSON.stringify(user));
