@@ -9,11 +9,14 @@ import {
   updateCoach,
   deleteCoach,
 } from "../api/coachApi";
+import { getAppointments } from "../api/appointmentApi";
 import "../App.css";
 
 function AdminPage() {
   const [clientes, setClientes] = useState([]);
   const [entrenadores, setEntrenadores] = useState([]);
+  const [citas, setCitas] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState("");
@@ -30,11 +33,15 @@ function AdminPage() {
       setLoading(true);
       setError("");
 
-      const clientesData = await getClients();
-      const coachesData = await getCoaches();
+      const [clientesData, coachesData, citasData] = await Promise.all([
+        getClients(),
+        getCoaches(),
+        getAppointments(),
+      ]);
 
-      setClientes(clientesData);
-      setEntrenadores(coachesData);
+      setClientes(clientesData ?? []);
+      setEntrenadores(coachesData ?? []);
+      setCitas(citasData ?? []);
     } catch (error) {
       console.error(error);
       setError("Error al cargar la información del administrador.");
@@ -46,6 +53,38 @@ function AdminPage() {
   function mostrarMensaje(texto) {
     setMensaje(texto);
     setTimeout(() => setMensaje(""), 3000);
+  }
+
+  function obtenerNombreCliente(cita) {
+    if (cita.clientName) {
+      return cita.clientName;
+    }
+
+    const cliente = clientes.find(
+      (cliente) => cliente.clientId === Number(cita.clientId)
+    );
+
+    return cliente ? cliente.fullName : `Cliente ID ${cita.clientId}`;
+  }
+
+  function obtenerNombreCoach(cita) {
+    if (cita.coachName) {
+      return cita.coachName;
+    }
+
+    const coach = entrenadores.find(
+      (coach) => coach.coachId === Number(cita.coachId)
+    );
+
+    return coach ? coach.fullName : `Coach ID ${cita.coachId}`;
+  }
+
+  function formatearHora(hora) {
+    if (!hora) {
+      return "Sin hora";
+    }
+
+    return hora.toString().substring(0, 5);
   }
 
   function abrirEditarCliente(cliente) {
@@ -130,8 +169,8 @@ function AdminPage() {
       <h2>Panel de administrador</h2>
 
       <p className="admin-descripcion">
-        Desde esta página puedes administrar clientes y entrenadores registrados
-        en FutureSkill Coach Lite.
+        Desde esta página puedes administrar clientes, entrenadores y citas
+        registradas en FutureSkill Coach Lite.
       </p>
 
       {mensaje && <p className="admin-mensaje">{mensaje}</p>}
@@ -238,6 +277,50 @@ function AdminPage() {
                           </button>
                         </div>
                       </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="admin-card">
+          <h3>Citas agendadas</h3>
+
+          <div className="admin-table-container">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Fecha</th>
+                  <th>Hora</th>
+                  <th>Tema</th>
+                  <th>Estado</th>
+                  <th>Cliente</th>
+                  <th>Coach</th>
+                  <th>Cliente ID</th>
+                  <th>Coach ID</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {citas.length === 0 ? (
+                  <tr>
+                    <td colSpan="9">No hay citas agendadas.</td>
+                  </tr>
+                ) : (
+                  citas.map((cita) => (
+                    <tr key={cita.appointmentId}>
+                      <td>{cita.appointmentId}</td>
+                      <td>{cita.date}</td>
+                      <td>{formatearHora(cita.time)}</td>
+                      <td>{cita.topic}</td>
+                      <td>{cita.status}</td>
+                      <td>{obtenerNombreCliente(cita)}</td>
+                      <td>{obtenerNombreCoach(cita)}</td>
+                      <td>{cita.clientId}</td>
+                      <td>{cita.coachId}</td>
                     </tr>
                   ))
                 )}
