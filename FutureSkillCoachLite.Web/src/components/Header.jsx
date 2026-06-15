@@ -88,6 +88,10 @@ function Header() {
               Información
             </Link>
 
+            <Link to="/coach-dashboard" onClick={cerrarMenu}>
+              Coaches
+            </Link>
+
             <button type="button" className="nav-button" onClick={cerrarSesion}>
               Cerrar sesión
             </button>

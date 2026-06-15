@@ -1188,6 +1188,80 @@ button {
   margin-top: 20px;
 }
 
+
+/* Esto sirve para dar estilo al dashboard de coaches visible para clientes. */
+
+.coach-dashboard-page {
+  width: 90%;
+  max-width: 1100px;
+  margin: 60px auto;
+  color: #f5f5f5;
+}
+
+.coach-dashboard-header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.coach-dashboard-header h1 {
+  color: #d4af37;
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+.coach-dashboard-header p {
+  color: #f5f5f5;
+  font-size: 20px;
+  max-width: 760px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.coach-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin-bottom: 30px;
+}
+
+.coach-dashboard-card {
+  background: linear-gradient(135deg, #0b0b0b, #1c1f24, #2f343a);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  border-radius: 18px;
+  padding: 28px 24px;
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
+}
+
+.coach-dashboard-card h3 {
+  color: #f0c52f;
+  font-size: 24px;
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.coach-dashboard-card p {
+  color: #f5f5f5;
+  font-size: 17px;
+  line-height: 1.5;
+  margin: 10px 0;
+}
+
+.coach-dashboard-card strong {
+  color: #f0c52f;
+}
+
+.coach-dashboard-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.coach-dashboard-actions a {
+  text-decoration: none;
+}
+
 /* Esto sirve para adaptar el diseño a pantallas tipo tablet. */
 
 @media (max-width: 900px) {
@@ -1388,6 +1462,23 @@ button {
 
   .footer-info {
     text-align: left;
+  }
+
+  .coach-dashboard-page {
+    width: 95%;
+    margin: 40px auto;
+  }
+
+  .coach-dashboard-header h1 {
+    font-size: 34px;
+  }
+
+  .coach-dashboard-header p {
+    font-size: 18px;
+  }
+
+  .coach-dashboard-grid {
+    grid-template-columns: 1fr;
   }
 }
 

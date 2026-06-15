@@ -16,6 +16,7 @@ import CoachClientsPage from "./pages/CoachClientsPage";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import AdminPage from "./pages/AdminPage";
 import AdminRoute from "./components/AdminRoute";
+import CoachDashboard from "./pages/CoachDashboard";
 
 function App() {
   return (
@@ -66,6 +67,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={["Coach"]}>
                   <CoachClientsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/coach-dashboard"
+              element={
+                <ProtectedRoute allowedRoles={["Client"]}>
+                  <CoachDashboard />
                 </ProtectedRoute>
               }
             />
