@@ -1,59 +1,62 @@
-import { useEffect, useState } from "react";
-import { createCoach, getCoaches } from "../api/coachApi";
+import { useState } from "react";
+import { createCoach } from "../api/coachApi";
 import "../App.css";
 
-function Entrenadores() {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    specialty: "",
-    email: "",
-    password: "",
-  });
+const initialCoachForm = {
+  fullName: "",
+  specialty: "",
+  email: "",
+  password: "",
+};
 
-  const [coaches, setCoaches] = useState([]);
-  const [loading, setLoading] = useState(true);
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function Entrenadores() {
+  // Datos del formulario de registro.
+  const [formData, setFormData] = useState(initialCoachForm);
+
+  // Estados de control para mostrar mensajes y evitar doble registro.
   const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  useEffect(() => {
-    loadCoaches();
-  }, []);
-
-  async function loadCoaches() {
-    try {
-      setLoading(true);
-      setErrorMessage("");
-
-      const coachesData = await getCoaches();
-      setCoaches(coachesData);
-    } catch (error) {
-      setErrorMessage(error.message || "Error al cargar los coaches.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
   function handleChange(event) {
     const { name, value } = event.target;
 
-    setFormData((previousData) => ({
-      ...previousData,
+    setFormData((currentData) => ({
+      ...currentData,
       [name]: value,
     }));
   }
 
-  function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  function getCleanCoachData() {
+    return {
+      fullName: formData.fullName.trim(),
+      specialty: formData.specialty.trim(),
+      email: formData.email.trim(),
+      password: formData.password.trim(),
+    };
   }
 
-  function clearForm() {
-    setFormData({
-      fullName: "",
-      specialty: "",
-      email: "",
-      password: "",
-    });
+  function validateCoachData(coachData) {
+    if (
+      !coachData.fullName ||
+      !coachData.specialty ||
+      !coachData.email ||
+      !coachData.password
+    ) {
+      return "Todos los campos son obligatorios.";
+    }
+
+    if (!emailPattern.test(coachData.email)) {
+      return "Ingrese un correo electrónico válido.";
+    }
+
+    if (coachData.password.length < 6) {
+      return "La contraseña debe tener al menos 6 caracteres.";
+    }
+
+    return "";
   }
 
   async function handleSubmit(event) {
@@ -62,42 +65,21 @@ function Entrenadores() {
     setErrorMessage("");
     setSuccessMessage("");
 
-    if (
-      !formData.fullName.trim() ||
-      !formData.specialty.trim() ||
-      !formData.email.trim() ||
-      !formData.password.trim()
-    ) {
-      setErrorMessage("Todos los campos son obligatorios.");
-      return;
-    }
+    const coachData = getCleanCoachData();
+    const validationMessage = validateCoachData(coachData);
 
-    if (!isValidEmail(formData.email)) {
-      setErrorMessage("Ingrese un correo electrónico válido.");
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      setErrorMessage("La contraseña debe tener al menos 6 caracteres.");
+    if (validationMessage) {
+      setErrorMessage(validationMessage);
       return;
     }
 
     try {
       setSaving(true);
 
-      const coachToCreate = {
-        fullName: formData.fullName.trim(),
-        specialty: formData.specialty.trim(),
-        email: formData.email.trim(),
-        password: formData.password,
-      };
-
-      await createCoach(coachToCreate);
+      await createCoach(coachData);
 
       setSuccessMessage("Coach registrado correctamente.");
-      clearForm();
-
-      await loadCoaches();
+      setFormData(initialCoachForm);
     } catch (error) {
       setErrorMessage(error.message || "Error al registrar el coach.");
     } finally {
@@ -167,40 +149,6 @@ function Entrenadores() {
             {saving ? "Registrando..." : "Registrar coach"}
           </button>
         </form>
-      </section>
-
-      <section className="entrenadores-list-card">
-        <h2>Coaches registrados</h2>
-
-        {loading ? (
-          <p className="mensaje-info">Cargando coaches...</p>
-        ) : coaches.length === 0 ? (
-          <p className="mensaje-info">No hay coaches registrados.</p>
-        ) : (
-          <div className="entrenadores-table-wrapper">
-            <table className="entrenadores-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Nombre</th>
-                  <th>Especialidad</th>
-                  <th>Correo</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {coaches.map((coach) => (
-                  <tr key={coach.coachId}>
-                    <td>{coach.coachId}</td>
-                    <td>{coach.fullName}</td>
-                    <td>{coach.specialty}</td>
-                    <td>{coach.email}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
       </section>
     </main>
   );

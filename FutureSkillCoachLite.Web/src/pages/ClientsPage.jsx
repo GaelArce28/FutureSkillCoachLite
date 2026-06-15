@@ -1,73 +1,85 @@
 import { useEffect, useState } from "react";
-import { createClient, getClients } from "../api/clientApi";
+import { createClient } from "../api/clientApi";
 import { getCoaches } from "../api/coachApi";
 import "../App.css";
 
-function ClientsPage() {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-    goal: "",
-    coachId: "",
-  });
+const initialClientForm = {
+  fullName: "",
+  email: "",
+  password: "",
+  goal: "",
+  coachId: "",
+};
 
-  const [clients, setClients] = useState([]);
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function ClientsPage() {
+  // Datos del formulario de registro.
+  const [formData, setFormData] = useState(initialClientForm);
+
+  // Lista necesaria solo para llenar el select de coaches.
   const [coaches, setCoaches] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+  // Estados de control para mostrar mensajes y evitar doble registro.
   const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
-    loadInitialData();
-  }, []);
-
-  async function loadInitialData() {
-    try {
-      setLoading(true);
-      setErrorMessage("");
-
-      const clientsData = await getClients();
-      setClients(clientsData);
-
+    async function loadCoaches() {
       try {
+        setErrorMessage("");
+
         const coachesData = await getCoaches();
         setCoaches(coachesData);
       } catch {
         setCoaches([]);
         setErrorMessage("No se pudieron cargar los coaches.");
       }
-    } catch (error) {
-      setErrorMessage(error.message || "Error al cargar la información.");
-    } finally {
-      setLoading(false);
     }
-  }
+
+    loadCoaches();
+  }, []);
 
   function handleChange(event) {
     const { name, value } = event.target;
 
-    setFormData((previousData) => ({
-      ...previousData,
+    setFormData((currentData) => ({
+      ...currentData,
       [name]: value,
     }));
   }
 
-  function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  function getCleanClientData() {
+    return {
+      fullName: formData.fullName.trim(),
+      email: formData.email.trim(),
+      password: formData.password.trim(),
+      goal: formData.goal.trim(),
+      coachId: formData.coachId,
+    };
   }
 
-  function getCoachName(client) {
-    if (client.coachName) {
-      return client.coachName;
+  function validateClientData(clientData) {
+    if (
+      !clientData.fullName ||
+      !clientData.email ||
+      !clientData.password ||
+      !clientData.goal ||
+      !clientData.coachId
+    ) {
+      return "Todos los campos son obligatorios.";
     }
 
-    const coach = coaches.find(
-      (coachItem) => coachItem.coachId === client.coachId
-    );
+    if (!emailPattern.test(clientData.email)) {
+      return "Ingrese un correo electrónico válido.";
+    }
 
-    return coach ? coach.fullName : client.coachId;
+    if (clientData.password.length < 6) {
+      return "La contraseña debe tener al menos 6 caracteres.";
+    }
+
+    return "";
   }
 
   async function handleSubmit(event) {
@@ -76,51 +88,24 @@ function ClientsPage() {
     setErrorMessage("");
     setSuccessMessage("");
 
-    if (
-      !formData.fullName.trim() ||
-      !formData.email.trim() ||
-      !formData.password.trim() ||
-      !formData.goal.trim() ||
-      !formData.coachId
-    ) {
-      setErrorMessage("Todos los campos son obligatorios.");
-      return;
-    }
+    const clientData = getCleanClientData();
+    const validationMessage = validateClientData(clientData);
 
-    if (!isValidEmail(formData.email)) {
-      setErrorMessage("Ingrese un correo electrónico válido.");
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      setErrorMessage("La contraseña debe tener al menos 6 caracteres.");
+    if (validationMessage) {
+      setErrorMessage(validationMessage);
       return;
     }
 
     try {
       setSaving(true);
 
-      const clientToCreate = {
-        fullName: formData.fullName.trim(),
-        email: formData.email.trim(),
-        password: formData.password,
-        goal: formData.goal.trim(),
-        coachId: Number(formData.coachId),
-      };
-
-      await createClient(clientToCreate);
-
-      setSuccessMessage("Cliente registrado correctamente.");
-
-      setFormData({
-        fullName: "",
-        email: "",
-        password: "",
-        goal: "",
-        coachId: "",
+      await createClient({
+        ...clientData,
+        coachId: Number(clientData.coachId),
       });
 
-      await loadInitialData();
+      setSuccessMessage("Cliente registrado correctamente.");
+      setFormData(initialClientForm);
     } catch (error) {
       setErrorMessage(error.message || "Error al registrar el cliente.");
     } finally {
@@ -208,42 +193,6 @@ function ClientsPage() {
             {saving ? "Registrando..." : "Registrar cliente"}
           </button>
         </form>
-      </section>
-
-      <section className="clientes-list-card">
-        <h2>Clientes registrados</h2>
-
-        {loading ? (
-          <p className="mensaje-info">Cargando clientes...</p>
-        ) : clients.length === 0 ? (
-          <p className="mensaje-info">No hay clientes registrados.</p>
-        ) : (
-          <div className="clientes-table-wrapper">
-            <table className="clientes-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Nombre</th>
-                  <th>Correo</th>
-                  <th>Objetivo</th>
-                  <th>Coach</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {clients.map((client) => (
-                  <tr key={client.clientId}>
-                    <td>{client.clientId}</td>
-                    <td>{client.fullName}</td>
-                    <td>{client.email}</td>
-                    <td>{client.goal}</td>
-                    <td>{getCoachName(client)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
       </section>
     </main>
   );

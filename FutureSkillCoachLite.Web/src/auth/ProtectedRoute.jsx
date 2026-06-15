@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { getCurrentRole } from "./session";
+import { getCurrentRole, hasRole } from "./session";
 
 function ProtectedRoute({ children, allowedRoles }) {
   const role = getCurrentRole();
@@ -8,13 +8,7 @@ function ProtectedRoute({ children, allowedRoles }) {
     return <Navigate to="/login" replace />;
   }
 
-  const normalizedRole = role.toLowerCase();
-
-  const hasAccess = allowedRoles.some(
-    (allowedRole) => allowedRole.toLowerCase() === normalizedRole
-  );
-
-  if (!hasAccess) {
+  if (!hasRole(role, allowedRoles)) {
     return <Navigate to="/" replace />;
   }
 
