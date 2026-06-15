@@ -2,27 +2,70 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getCurrentUser, logout } from "../auth/session";
 
+const enlacesPublicos = [
+  { path: "/clientes", label: "Registrar" },
+  { path: "/entrenadores", label: "Registrar coach" },
+  { path: "/actividades", label: "Actividades" },
+  { path: "/informacion", label: "Información" },
+  { path: "/login", label: "Login" },
+];
+
+const enlacesPorRol = {
+  client: [
+    { path: "/perfil", label: "Perfil" },
+    { path: "/citas", label: "Citas" },
+    { path: "/actividades", label: "Actividades" },
+    { path: "/informacion", label: "Información" },
+    { path: "/coach-dashboard", label: "Coaches" },
+  ],
+  coach: [
+    { path: "/mis-clientes", label: "Mis clientes" },
+    { path: "/citas", label: "Citas" },
+    { path: "/informacion", label: "Información" },
+  ],
+  admin: [
+    { path: "/admin", label: "Admin" },
+    { path: "/perfil", label: "Perfil" },
+  ],
+};
+
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-
   const navigate = useNavigate();
 
+  // Usuario guardado en sesión local.
   const usuario = getCurrentUser();
-  const role = usuario?.role || usuario?.rol || usuario?.userRole || null;
 
-  const esCliente = role?.toLowerCase() === "client";
-  const esCoach = role?.toLowerCase() === "coach";
-  const esAdmin = role?.toLowerCase() === "admin";
+  // El backend puede guardar el rol con distintos nombres.
+  const rolActual = obtenerRol(usuario);
 
-  const cerrarMenu = () => {
+  // Si no hay usuario, se muestra el menú público.
+  // Si hay usuario, se muestra el menú correspondiente a su rol.
+  const enlacesMenu = usuario ? enlacesPorRol[rolActual] || [] : enlacesPublicos;
+
+  function obtenerRol(usuarioActual) {
+    const rol =
+      usuarioActual?.role ||
+      usuarioActual?.rol ||
+      usuarioActual?.userRole ||
+      "";
+
+    return rol.toLowerCase();
+  }
+
+  function cerrarMenu() {
     setMenuOpen(false);
-  };
+  }
 
-  const cerrarSesion = () => {
+  function cambiarEstadoMenu() {
+    setMenuOpen((menuAbierto) => !menuAbierto);
+  }
+
+  function cerrarSesion() {
     logout();
-    setMenuOpen(false);
+    cerrarMenu();
     navigate("/login");
-  };
+  }
 
   return (
     <header className="header">
@@ -35,103 +78,32 @@ function Header() {
       <button
         className="menu-btn"
         type="button"
-        onClick={() => setMenuOpen(!menuOpen)}
+        onClick={cambiarEstadoMenu}
         aria-label="Abrir menú"
+        aria-expanded={menuOpen}
+        aria-controls="menu-principal"
       >
         ☰
       </button>
 
-      <nav className={`nav ${menuOpen ? "nav-open" : ""}`}>
+      <nav
+        id="menu-principal"
+        className={`nav ${menuOpen ? "nav-open" : ""}`}
+      >
         <Link to="/" onClick={cerrarMenu}>
           Inicio
         </Link>
 
-        {!usuario && (
-          <>
-            <Link to="/clientes" onClick={cerrarMenu}>
-              Registrar
-            </Link>
+        {enlacesMenu.map((enlace) => (
+          <Link key={enlace.path} to={enlace.path} onClick={cerrarMenu}>
+            {enlace.label}
+          </Link>
+        ))}
 
-            <Link to="/entrenadores" onClick={cerrarMenu}>
-              Entrenadores
-            </Link>
-
-            <Link to="/actividades" onClick={cerrarMenu}>
-              Actividades
-            </Link>
-
-            <Link to="/informacion" onClick={cerrarMenu}>
-              Información
-            </Link>
-
-            <Link to="/login" onClick={cerrarMenu}>
-              Login
-            </Link>
-          </>
-        )}
-
-        {esCliente && (
-          <>
-            <Link to="/perfil" onClick={cerrarMenu}>
-              Perfil
-            </Link>
-
-            <Link to="/citas" onClick={cerrarMenu}>
-              Citas
-            </Link>
-
-            <Link to="/actividades" onClick={cerrarMenu}>
-              Actividades
-            </Link>
-
-            <Link to="/informacion" onClick={cerrarMenu}>
-              Información
-            </Link>
-
-            <Link to="/coach-dashboard" onClick={cerrarMenu}>
-              Coaches
-            </Link>
-
-            <button type="button" className="nav-button" onClick={cerrarSesion}>
-              Cerrar sesión
-            </button>
-          </>
-        )}
-
-        {esCoach && (
-          <>
-            <Link to="/mis-clientes" onClick={cerrarMenu}>
-              Mis clientes
-            </Link>
-
-            <Link to="/citas" onClick={cerrarMenu}>
-              Citas
-            </Link>
-
-            <Link to="/informacion" onClick={cerrarMenu}>
-              Información
-            </Link>
-
-            <button type="button" className="nav-button" onClick={cerrarSesion}>
-              Cerrar sesión
-            </button>
-          </>
-        )}
-
-        {esAdmin && (
-          <>
-            <Link to="/admin" onClick={cerrarMenu}>
-              Admin
-            </Link>
-
-            <Link to="/perfil" onClick={cerrarMenu}>
-              Perfil
-            </Link>
-
-            <button type="button" className="nav-button" onClick={cerrarSesion}>
-              Cerrar sesión
-            </button>
-          </>
+        {usuario && (
+          <button type="button" className="nav-button" onClick={cerrarSesion}>
+            Cerrar sesión
+          </button>
         )}
       </nav>
     </header>
