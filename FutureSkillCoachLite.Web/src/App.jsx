@@ -14,6 +14,8 @@ import ClientsPage from "./pages/ClientsPage";
 import Entrenadores from "./pages/Entrenadores";
 import CoachClientsPage from "./pages/CoachClientsPage";
 import ProtectedRoute from "./auth/ProtectedRoute";
+import AdminPage from "./pages/AdminPage";
+import AdminRoute from "./components/AdminRoute";
 
 function App() {
   return (
@@ -32,6 +34,15 @@ function App() {
             <Route path="/entrenadores" element={<Entrenadores />} />
 
             <Route
+  path="/admin"
+  element={
+    <AdminRoute>
+      <AdminPage />
+    </AdminRoute>
+  }
+/>
+
+            <Route
               path="/perfil"
               element={
                 <ProtectedRoute allowedRoles={["Client"]}>
@@ -39,6 +50,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            
 
             <Route
               path="/citas"

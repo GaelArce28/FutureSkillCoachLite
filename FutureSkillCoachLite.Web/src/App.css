@@ -1600,3 +1600,256 @@ button {
     font-size: 17px;
   }
 }
+
+.admin-page {
+  min-height: 100vh;
+  padding: 2rem;
+  background: #111827;
+  color: #f9fafb;
+}
+
+.admin-page h2 {
+  color: #facc15;
+  margin-bottom: 0.5rem;
+}
+
+.admin-descripcion {
+  color: #d1d5db;
+  margin-bottom: 1.5rem;
+}
+
+.admin-mensaje {
+  background: #065f46;
+  color: #d1fae5;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.admin-error {
+  background: #7f1d1d;
+  color: #fee2e2;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.admin-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.admin-card {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+.admin-card h3 {
+  color: #facc15;
+  margin-bottom: 1rem;
+}
+
+.admin-table-container {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 0.8rem;
+  border-bottom: 1px solid #374151;
+  text-align: left;
+}
+
+.admin-table th {
+  background: #111827;
+  color: #facc15;
+}
+
+.admin-table td {
+  color: #f9fafb;
+}
+
+.btn-editar,
+.btn-eliminar,
+.btn-guardar,
+.btn-cancelar {
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  margin: 0.2rem;
+  font-weight: bold;
+}
+
+.btn-editar {
+  background: #2563eb;
+  color: white;
+}
+
+.btn-eliminar {
+  background: #dc2626;
+  color: white;
+}
+
+.btn-guardar {
+  background: #16a34a;
+  color: white;
+}
+
+.btn-cancelar {
+  background: #6b7280;
+  color: white;
+}
+
+.modal-fondo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(17, 24, 39, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 1rem;
+}
+
+.modal-admin {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 14px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 450px;
+}
+
+.modal-admin h3 {
+  color: #facc15;
+  margin-bottom: 1rem;
+}
+
+.modal-admin label {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 0.3rem;
+  color: #e5e7eb;
+}
+
+.modal-admin input {
+  width: 100%;
+  padding: 0.7rem;
+  border-radius: 8px;
+  border: 1px solid #4b5563;
+  background: #111827;
+  color: white;
+}
+
+.modal-botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .admin-page {
+    padding: 1rem;
+  }
+
+  .admin-card {
+    padding: 1rem;
+  }
+
+  .modal-admin {
+    padding: 1.2rem;
+  }
+
+  .modal-botones {
+    flex-direction: column;
+  }
+
+  .btn-guardar,
+  .btn-cancelar {
+    width: 100%;
+  }
+}
+.nav-button {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0;
+}
+
+.nav-button:hover {
+  color: #facc15;
+}
+.menu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #facc15;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.nav-button {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0;
+}
+
+.nav-button:hover {
+  color: #facc15;
+}
+
+@media (max-width: 768px) {
+  .header {
+    position: relative;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 1rem;
+    left: 1rem;
+    flex-direction: column;
+    background: #111827;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    padding: 1rem;
+    z-index: 999;
+  }
+
+  .nav.nav-abierto {
+    display: flex;
+  }
+
+  .nav a,
+  .nav-button {
+    width: 100%;
+    text-align: left;
+    padding: 0.7rem;
+  }
+}

@@ -1,5 +1,4 @@
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5140/api";
-console.log("API_URL usado:", API_URL);
 
 async function readJsonResponse(response) {
   const text = await response.text();
@@ -35,4 +34,34 @@ export async function createCoach(coachData) {
   }
 
   return await readJsonResponse(response);
+}
+
+export async function updateCoach(coachId, coachData) {
+  const response = await fetch(`${API_URL}/Coaches/${coachId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(coachData),
+  });
+
+  if (!response.ok) {
+    const error = await readJsonResponse(response);
+    throw new Error(error?.message ?? "Error al actualizar el coach.");
+  }
+
+  return await readJsonResponse(response);
+}
+
+export async function deleteCoach(coachId) {
+  const response = await fetch(`${API_URL}/Coaches/${coachId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    const error = await readJsonResponse(response);
+    throw new Error(error?.message ?? "Error al eliminar el coach.");
+  }
+
+  return true;
 }
