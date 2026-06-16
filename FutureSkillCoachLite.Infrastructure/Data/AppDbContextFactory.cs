@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Design;
                     var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
                     optionsBuilder.UseSqlServer(
-                        "Server=localhost,1433;Database=FutureSkillCoachDb;User Id=sa;Password=DS42026!;TrustServerCertificate=True;"
+                        "Server=tcp:futureskill-gael-2026.database.windows.net,1433;Initial Catalog=FutureSkillCoachLiteDB;Persist Security Info=False;User ID=adminsql;Password=PLACEHOLDER;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
                     );
 
                     return new AppDbContext(optionsBuilder.Options);
