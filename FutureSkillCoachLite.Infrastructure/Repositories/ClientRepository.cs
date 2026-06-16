@@ -65,21 +65,27 @@ public class ClientRepository : IClientRepository
         return existingClient;
     }
 
-    public async Task<bool> DeleteAsync(int clientId)
+public async Task<bool> DeleteAsync(int clientId)
+{
+    var client = await _context.Clients
+        .FirstOrDefaultAsync(c => c.ClientId == clientId);
+
+    if (client == null)
     {
-        var client = await _context.Clients
-            .FirstOrDefaultAsync(c => c.ClientId == clientId);
-
-        if (client == null)
-        {
-            return false;
-        }
-
-        _context.Clients.Remove(client);
-        await _context.SaveChangesAsync();
-
-        return true;
+        return false;
     }
+
+    var appointments = await _context.Appointments
+        .Where(a => a.ClientId == clientId)
+        .ToListAsync();
+
+    _context.Appointments.RemoveRange(appointments);
+    _context.Clients.Remove(client);
+
+    await _context.SaveChangesAsync();
+
+    return true;
+}
 
     public async Task<bool> ExistsByEmailAsync(string email)
     {

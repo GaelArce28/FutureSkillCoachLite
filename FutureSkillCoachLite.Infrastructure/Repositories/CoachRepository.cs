@@ -54,7 +54,11 @@ public class CoachRepository : ICoachRepository
         existingCoach.FullName = coach.FullName;
         existingCoach.Specialty = coach.Specialty;
         existingCoach.Email = coach.Email;
-        existingCoach.PasswordHash = coach.PasswordHash;
+
+        if (!string.IsNullOrWhiteSpace(coach.PasswordHash))
+        {
+            existingCoach.PasswordHash = coach.PasswordHash;
+        }
 
         await _context.SaveChangesAsync();
 
@@ -71,7 +75,23 @@ public class CoachRepository : ICoachRepository
             return false;
         }
 
+        var tieneClientesAsignados = await _context.Clients
+            .AnyAsync(c => c.CoachId == coachId);
+
+        if (tieneClientesAsignados)
+        {
+            throw new InvalidOperationException(
+                "No se puede eliminar este entrenador porque tiene clientes asignados."
+            );
+        }
+
+        var appointments = await _context.Appointments
+            .Where(a => a.CoachId == coachId)
+            .ToListAsync();
+
+        _context.Appointments.RemoveRange(appointments);
         _context.Coaches.Remove(coach);
+
         await _context.SaveChangesAsync();
 
         return true;

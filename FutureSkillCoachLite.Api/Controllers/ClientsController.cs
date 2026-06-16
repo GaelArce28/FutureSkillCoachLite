@@ -51,7 +51,10 @@ public class ClientsController : ControllerBase
 
             if (client == null)
             {
-                return NotFound(new { message = "Client not found." });
+                return NotFound(new
+                {
+                    message = "Client not found."
+                });
             }
 
             return Ok(client);
@@ -81,7 +84,10 @@ public class ClientsController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(new { message = ex.Message });
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
         }
         catch (Exception ex)
         {
@@ -96,7 +102,7 @@ public class ClientsController : ControllerBase
     [HttpPut("{clientId:int}")]
     public async Task<ActionResult<ClientResponseDto>> Update(
         int clientId,
-        CreateClientRequestDto request)
+        UpdateClientRequestDto request)
     {
         try
         {
@@ -104,10 +110,20 @@ public class ClientsController : ControllerBase
 
             if (updatedClient == null)
             {
-                return NotFound(new { message = "Client not found." });
+                return NotFound(new
+                {
+                    message = "Client not found."
+                });
             }
 
             return Ok(updatedClient);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
         }
         catch (Exception ex)
         {
@@ -128,7 +144,10 @@ public class ClientsController : ControllerBase
 
             if (!deleted)
             {
-                return NotFound(new { message = "Client not found." });
+                return NotFound(new
+                {
+                    message = "Client not found."
+                });
             }
 
             return NoContent();

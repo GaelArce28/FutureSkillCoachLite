@@ -23,6 +23,7 @@ function AdminPage() {
 
   const [clienteEditando, setClienteEditando] = useState(null);
   const [coachEditando, setCoachEditando] = useState(null);
+  const [reasignaciones, setReasignaciones] = useState({});
 
   useEffect(() => {
     cargarDatos();
@@ -33,15 +34,13 @@ function AdminPage() {
       setLoading(true);
       setError("");
 
-      const [clientesData, coachesData, citasData] = await Promise.all([
-        getClients(),
-        getCoaches(),
-        getAppointments(),
-      ]);
+      const clientesData = await getClients();
+      const coachesData = await getCoaches();
+      const citasData = await getAppointments();
 
-      setClientes(clientesData ?? []);
-      setEntrenadores(coachesData ?? []);
-      setCitas(citasData ?? []);
+      setClientes(clientesData);
+      setEntrenadores(coachesData);
+      setCitas(citasData);
     } catch (error) {
       console.error(error);
       setError("Error al cargar la información del administrador.");
@@ -55,57 +54,86 @@ function AdminPage() {
     setTimeout(() => setMensaje(""), 3000);
   }
 
-  function obtenerNombreCliente(cita) {
-    if (cita.clientName) {
-      return cita.clientName;
-    }
-
-    const cliente = clientes.find(
-      (cliente) => cliente.clientId === Number(cita.clientId)
-    );
-
-    return cliente ? cliente.fullName : `Cliente ID ${cita.clientId}`;
-  }
-
-  function obtenerNombreCoach(cita) {
-    if (cita.coachName) {
-      return cita.coachName;
-    }
-
-    const coach = entrenadores.find(
-      (coach) => coach.coachId === Number(cita.coachId)
-    );
-
-    return coach ? coach.fullName : `Coach ID ${cita.coachId}`;
-  }
-
-  function formatearHora(hora) {
-    if (!hora) {
-      return "Sin hora";
-    }
-
-    return hora.toString().substring(0, 5);
-  }
-
   function abrirEditarCliente(cliente) {
     setClienteEditando({ ...cliente });
   }
 
   function abrirEditarCoach(coach) {
     setCoachEditando({ ...coach });
+    setReasignaciones({});
+  }
+
+  function obtenerNombreCliente(clientId) {
+    const cliente = clientes.find(
+      (cliente) => Number(cliente.clientId) === Number(clientId)
+    );
+
+    return cliente?.fullName ?? `Cliente ID ${clientId}`;
+  }
+
+  function obtenerNombreCoach(coachId) {
+    const coach = entrenadores.find(
+      (coach) => Number(coach.coachId) === Number(coachId)
+    );
+
+    return coach?.fullName ?? `Coach ID ${coachId}`;
+  }
+
+  function obtenerFechaCita(cita) {
+    const fecha =
+      cita.date ??
+      cita.appointmentDate ??
+      cita.fecha ??
+      cita.startDate ??
+      "";
+
+    if (!fecha) {
+      return "Sin fecha";
+    }
+
+    try {
+      return new Date(fecha).toLocaleDateString("es-CR");
+    } catch {
+      return fecha;
+    }
+  }
+
+  function obtenerHoraCita(cita) {
+    return (
+      cita.time ??
+      cita.appointmentTime ??
+      cita.hora ??
+      cita.startTime ??
+      "Sin hora"
+    );
+  }
+
+  function obtenerTemaCita(cita) {
+    return cita.topic ?? cita.description ?? cita.tema ?? "Sin tema";
+  }
+
+  function obtenerEstadoCita(cita) {
+    return cita.status ?? cita.estado ?? "Sin estado";
   }
 
   async function guardarCliente(event) {
     event.preventDefault();
 
     try {
-      await updateClient(clienteEditando.clientId, clienteEditando);
+      const clienteActualizado = { ...clienteEditando };
+
+      if (!clienteActualizado.password?.trim()) {
+        delete clienteActualizado.password;
+      }
+
+      await updateClient(clienteEditando.clientId, clienteActualizado);
+
       setClienteEditando(null);
       mostrarMensaje("Cliente actualizado correctamente.");
       await cargarDatos();
     } catch (error) {
       console.error(error);
-      setError("No se pudo actualizar el cliente.");
+      setError(error.message || "No se pudo actualizar el cliente.");
     }
   }
 
@@ -113,13 +141,52 @@ function AdminPage() {
     event.preventDefault();
 
     try {
-      await updateCoach(coachEditando.coachId, coachEditando);
+      const coachActualizado = { ...coachEditando };
+
+      if (!coachActualizado.password?.trim()) {
+        delete coachActualizado.password;
+      }
+
+      await updateCoach(coachEditando.coachId, coachActualizado);
+
       setCoachEditando(null);
       mostrarMensaje("Entrenador actualizado correctamente.");
       await cargarDatos();
     } catch (error) {
       console.error(error);
-      setError("No se pudo actualizar el entrenador.");
+      setError(error.message || "No se pudo actualizar el entrenador.");
+    }
+  }
+
+  async function reasignarCliente(cliente) {
+    const nuevoCoachId = reasignaciones[cliente.clientId];
+
+    if (!nuevoCoachId) {
+      setError("Debes seleccionar un nuevo entrenador para reasignar el cliente.");
+      return;
+    }
+
+    try {
+      const clienteActualizado = {
+        fullName: cliente.fullName,
+        email: cliente.email,
+        goal: cliente.goal,
+        coachId: Number(nuevoCoachId),
+      };
+
+      await updateClient(cliente.clientId, clienteActualizado);
+
+      setReasignaciones((actual) => {
+        const copia = { ...actual };
+        delete copia[cliente.clientId];
+        return copia;
+      });
+
+      mostrarMensaje("Cliente reasignado correctamente.");
+      await cargarDatos();
+    } catch (error) {
+      console.error(error);
+      setError(error.message || "No se pudo reasignar el cliente.");
     }
   }
 
@@ -134,11 +201,22 @@ function AdminPage() {
       await cargarDatos();
     } catch (error) {
       console.error(error);
-      setError("No se pudo eliminar el cliente.");
+      setError(error.message || "No se pudo eliminar el cliente.");
     }
   }
 
   async function eliminarCoach(coachId) {
+    const clientesAsignados = clientes.filter(
+      (cliente) => Number(cliente.coachId) === Number(coachId)
+    );
+
+    if (clientesAsignados.length > 0) {
+      setError(
+        "No puedes eliminar este entrenador porque tiene clientes asignados. Primero entra en Editar y reasigna esos clientes a otro coach."
+      );
+      return;
+    }
+
     const confirmar = window.confirm(
       "¿Seguro que deseas eliminar este entrenador?"
     );
@@ -151,7 +229,7 @@ function AdminPage() {
       await cargarDatos();
     } catch (error) {
       console.error(error);
-      setError("No se pudo eliminar el entrenador.");
+      setError(error.message || "No se pudo eliminar el entrenador.");
     }
   }
 
@@ -164,13 +242,25 @@ function AdminPage() {
     );
   }
 
+  const clientesDelCoachEditando = coachEditando
+    ? clientes.filter(
+        (cliente) => Number(cliente.coachId) === Number(coachEditando.coachId)
+      )
+    : [];
+
+  const otrosCoaches = coachEditando
+    ? entrenadores.filter(
+        (coach) => Number(coach.coachId) !== Number(coachEditando.coachId)
+      )
+    : [];
+
   return (
     <section className="admin-page">
       <h2>Panel de administrador</h2>
 
       <p className="admin-descripcion">
-        Desde esta página puedes administrar clientes, entrenadores y citas
-        registradas en FutureSkill Coach Lite.
+        Desde esta página puedes administrar clientes, entrenadores y ver las
+        citas registradas en FutureSkill Coach Lite.
       </p>
 
       {mensaje && <p className="admin-mensaje">{mensaje}</p>}
@@ -181,7 +271,7 @@ function AdminPage() {
           <h3>Clientes registrados</h3>
 
           <div className="admin-table-container">
-            <table className="admin-table">
+            <table className="admin-table admin-table-clientes">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -236,13 +326,14 @@ function AdminPage() {
           <h3>Entrenadores registrados</h3>
 
           <div className="admin-table-container">
-            <table className="admin-table">
+            <table className="admin-table admin-table-coaches">
               <thead>
                 <tr>
                   <th>ID</th>
                   <th>Nombre</th>
                   <th>Email</th>
                   <th>Especialidad</th>
+                  <th>Clientes asignados</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -250,35 +341,43 @@ function AdminPage() {
               <tbody>
                 {entrenadores.length === 0 ? (
                   <tr>
-                    <td colSpan="5">No hay entrenadores registrados.</td>
+                    <td colSpan="6">No hay entrenadores registrados.</td>
                   </tr>
                 ) : (
-                  entrenadores.map((coach) => (
-                    <tr key={coach.coachId}>
-                      <td>{coach.coachId}</td>
-                      <td>{coach.fullName}</td>
-                      <td>{coach.email}</td>
-                      <td>{coach.specialty}</td>
+                  entrenadores.map((coach) => {
+                    const cantidadClientes = clientes.filter(
+                      (cliente) =>
+                        Number(cliente.coachId) === Number(coach.coachId)
+                    ).length;
 
-                      <td className="admin-acciones-td">
-                        <div className="admin-acciones">
-                          <button
-                            className="btn-editar"
-                            onClick={() => abrirEditarCoach(coach)}
-                          >
-                            Editar
-                          </button>
+                    return (
+                      <tr key={coach.coachId}>
+                        <td>{coach.coachId}</td>
+                        <td>{coach.fullName}</td>
+                        <td>{coach.email}</td>
+                        <td>{coach.specialty}</td>
+                        <td>{cantidadClientes}</td>
 
-                          <button
-                            className="btn-eliminar"
-                            onClick={() => eliminarCoach(coach.coachId)}
-                          >
-                            Eliminar
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                        <td className="admin-acciones-td">
+                          <div className="admin-acciones">
+                            <button
+                              className="btn-editar"
+                              onClick={() => abrirEditarCoach(coach)}
+                            >
+                              Editar
+                            </button>
+
+                            <button
+                              className="btn-eliminar"
+                              onClick={() => eliminarCoach(coach.coachId)}
+                            >
+                              Eliminar
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>
@@ -286,10 +385,10 @@ function AdminPage() {
         </div>
 
         <div className="admin-card">
-          <h3>Citas agendadas</h3>
+          <h3>Citas registradas</h3>
 
           <div className="admin-table-container">
-            <table className="admin-table">
+            <table className="admin-table admin-table-citas">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -298,29 +397,29 @@ function AdminPage() {
                   <th>Tema</th>
                   <th>Estado</th>
                   <th>Cliente</th>
-                  <th>Coach</th>
-                  <th>Cliente ID</th>
-                  <th>Coach ID</th>
+                  <th>Entrenador</th>
                 </tr>
               </thead>
 
               <tbody>
                 {citas.length === 0 ? (
                   <tr>
-                    <td colSpan="9">No hay citas agendadas.</td>
+                    <td colSpan="7">No hay citas registradas.</td>
                   </tr>
                 ) : (
                   citas.map((cita) => (
-                    <tr key={cita.appointmentId}>
-                      <td>{cita.appointmentId}</td>
-                      <td>{cita.date}</td>
-                      <td>{formatearHora(cita.time)}</td>
-                      <td>{cita.topic}</td>
-                      <td>{cita.status}</td>
-                      <td>{obtenerNombreCliente(cita)}</td>
-                      <td>{obtenerNombreCoach(cita)}</td>
-                      <td>{cita.clientId}</td>
-                      <td>{cita.coachId}</td>
+                    <tr key={cita.appointmentId ?? cita.id}>
+                      <td>{cita.appointmentId ?? cita.id}</td>
+                      <td>{obtenerFechaCita(cita)}</td>
+                      <td>{obtenerHoraCita(cita)}</td>
+                      <td>{obtenerTemaCita(cita)}</td>
+                      <td>{obtenerEstadoCita(cita)}</td>
+                      <td>
+                        {obtenerNombreCliente(cita.clientId ?? cita.clienteId)}
+                      </td>
+                      <td>
+                        {obtenerNombreCoach(cita.coachId ?? cita.entrenadorId)}
+                      </td>
                     </tr>
                   ))
                 )}
@@ -371,9 +470,8 @@ function AdminPage() {
               }
             />
 
-            <label>ID del entrenador</label>
-            <input
-              type="number"
+            <label>Entrenador asignado</label>
+            <select
               value={clienteEditando.coachId ?? ""}
               onChange={(e) =>
                 setClienteEditando({
@@ -381,7 +479,14 @@ function AdminPage() {
                   coachId: Number(e.target.value),
                 })
               }
-            />
+            >
+              <option value="">Seleccione un entrenador</option>
+              {entrenadores.map((coach) => (
+                <option key={coach.coachId} value={coach.coachId}>
+                  {coach.coachId} - {coach.fullName}
+                </option>
+              ))}
+            </select>
 
             <div className="modal-botones">
               <button type="submit" className="btn-guardar">
@@ -402,7 +507,10 @@ function AdminPage() {
 
       {coachEditando && (
         <div className="modal-fondo">
-          <form className="modal-admin" onSubmit={guardarCoach}>
+          <form
+            className="modal-admin modal-admin-grande"
+            onSubmit={guardarCoach}
+          >
             <h3>Editar entrenador</h3>
 
             <label>Nombre completo</label>
@@ -440,6 +548,65 @@ function AdminPage() {
                 })
               }
             />
+
+            <div className="coach-clientes-asignados">
+              <h4>Clientes asignados a este entrenador</h4>
+
+              {clientesDelCoachEditando.length === 0 ? (
+                <p className="sin-clientes-coach">
+                  Este entrenador no tiene clientes asignados.
+                </p>
+              ) : (
+                <>
+                  <p className="nota-reasignacion">
+                    Para poder eliminar este entrenador, primero mueve estos
+                    clientes a otro coach.
+                  </p>
+
+                  <div className="lista-clientes-coach">
+                    {clientesDelCoachEditando.map((cliente) => (
+                      <div
+                        className="cliente-coach-item"
+                        key={cliente.clientId}
+                      >
+                        <div className="cliente-coach-info">
+                          <strong>{cliente.fullName}</strong>
+                          <span>{cliente.email}</span>
+                          <small>Cliente ID: {cliente.clientId}</small>
+                        </div>
+
+                        <div className="cliente-coach-reasignar">
+                          <select
+                            value={reasignaciones[cliente.clientId] ?? ""}
+                            onChange={(e) =>
+                              setReasignaciones({
+                                ...reasignaciones,
+                                [cliente.clientId]: e.target.value,
+                              })
+                            }
+                          >
+                            <option value="">Mover a...</option>
+                            {otrosCoaches.map((coach) => (
+                              <option key={coach.coachId} value={coach.coachId}>
+                                {coach.coachId} - {coach.fullName}
+                              </option>
+                            ))}
+                          </select>
+
+                          <button
+                            type="button"
+                            className="btn-reasignar"
+                            onClick={() => reasignarCliente(cliente)}
+                          >
+                            Mover
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
 
             <div className="modal-botones">
               <button type="submit" className="btn-guardar">

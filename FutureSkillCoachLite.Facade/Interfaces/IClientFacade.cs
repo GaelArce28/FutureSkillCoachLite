@@ -10,7 +10,7 @@ public interface IClientFacade
 
     Task<ClientResponseDto> CreateAsync(CreateClientRequestDto request);
 
-    Task<ClientResponseDto?> UpdateAsync(int clientId, CreateClientRequestDto request);
+   Task<ClientResponseDto?> UpdateAsync(int clientId, UpdateClientRequestDto request);
 
     Task<bool> DeleteAsync(int clientId);
 }

@@ -73,17 +73,27 @@ public class ClientFacade : IClientFacade
         };
     }
 
-    public async Task<ClientResponseDto?> UpdateAsync(int clientId, CreateClientRequestDto request)
+    public async Task<ClientResponseDto?> UpdateAsync(int clientId, UpdateClientRequestDto request)
     {
-        var client = new Client
+        var client = await _clientService.GetByIdAsync(clientId);
+
+        if (client == null)
         {
-            ClientId = clientId,
-            FullName = request.FullName,
-            Email = request.Email,
-            Goal = request.Goal,
-            CoachId = request.CoachId,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
-        };
+            return null;
+        }
+
+        client.FullName = request.FullName;
+        client.Email = request.Email;
+        client.Goal = request.Goal;
+       if (request.CoachId.HasValue)
+{
+    client.CoachId = request.CoachId.Value;
+}
+
+        if (!string.IsNullOrWhiteSpace(request.Password))
+        {
+            client.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+        }
 
         var updatedClient = await _clientService.UpdateAsync(client);
 

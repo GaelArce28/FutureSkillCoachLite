@@ -25,7 +25,7 @@ const enlacesPorRol = {
   ],
   admin: [
     { path: "/admin", label: "Admin" },
-    { path: "/perfil", label: "Perfil" },
+    
   ],
 };
 
