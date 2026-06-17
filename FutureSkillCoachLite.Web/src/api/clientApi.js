@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5140/api";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5140";
 
 async function readJsonResponse(response) {
   const text = await response.text();
@@ -6,7 +6,7 @@ async function readJsonResponse(response) {
 }
 
 export async function getClients() {
-  const response = await fetch(`${API_URL}/Clients`);
+  const response = await fetch(`${API_URL}/api/clients`);
 
   if (response.status === 404) {
     return [];
@@ -20,7 +20,7 @@ export async function getClients() {
 }
 
 export async function getClientById(clientId) {
-  const response = await fetch(`${API_URL}/Clients/${clientId}`);
+  const response = await fetch(`${API_URL}/api/clients/${clientId}`);
 
   if (!response.ok) {
     throw new Error("Error al cargar el cliente.");
@@ -30,7 +30,7 @@ export async function getClientById(clientId) {
 }
 
 export async function createClient(clientData) {
-  const response = await fetch(`${API_URL}/Clients`, {
+  const response = await fetch(`${API_URL}/api/clients`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -47,7 +47,7 @@ export async function createClient(clientData) {
 }
 
 export async function updateClient(clientId, clientData) {
-  const response = await fetch(`${API_URL}/Clients/${clientId}`, {
+  const response = await fetch(`${API_URL}/api/clients/${clientId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -64,7 +64,7 @@ export async function updateClient(clientId, clientData) {
 }
 
 export async function deleteClient(clientId) {
-  const response = await fetch(`${API_URL}/Clients/${clientId}`, {
+  const response = await fetch(`${API_URL}/api/clients/${clientId}`, {
     method: "DELETE",
   });
 
