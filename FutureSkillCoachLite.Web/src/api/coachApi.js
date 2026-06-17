@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5140/api";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5140";
 
 async function readJsonResponse(response) {
   const text = await response.text();
@@ -6,7 +6,7 @@ async function readJsonResponse(response) {
 }
 
 export async function getCoaches() {
-  const response = await fetch(`${API_URL}/Coaches`);
+  const response = await fetch(`${API_URL}/api/coaches`);
 
   if (response.status === 404) {
     return [];
@@ -20,7 +20,7 @@ export async function getCoaches() {
 }
 
 export async function createCoach(coachData) {
-  const response = await fetch(`${API_URL}/Coaches`, {
+  const response = await fetch(`${API_URL}/api/coaches`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -37,7 +37,7 @@ export async function createCoach(coachData) {
 }
 
 export async function updateCoach(coachId, coachData) {
-  const response = await fetch(`${API_URL}/Coaches/${coachId}`, {
+  const response = await fetch(`${API_URL}/api/coaches/${coachId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -54,7 +54,7 @@ export async function updateCoach(coachId, coachData) {
 }
 
 export async function deleteCoach(coachId) {
-  const response = await fetch(`${API_URL}/Coaches/${coachId}`, {
+  const response = await fetch(`${API_URL}/api/coaches/${coachId}`, {
     method: "DELETE",
   });
 
