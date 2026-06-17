@@ -1,9 +1,15 @@
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5140/api";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5140";
+
 console.log("API_URL usado:", API_URL);
 
 async function readJsonResponse(response) {
   const text = await response.text();
-  return text ? JSON.parse(text) : null;
+
+  if (!text) {
+    return null;
+  }
+
+  return JSON.parse(text);
 }
 
 function getAuthHeaders() {
@@ -19,20 +25,22 @@ function getAuthHeaders() {
 }
 
 function handleUnauthorized(response) {
-  if (response.status === 401) {
-    localStorage.removeItem("token");
-    localStorage.removeItem("usuario");
-    localStorage.removeItem("cliente");
-    localStorage.removeItem("coach");
-
-    window.location.href = "/login";
-
-    throw new Error("Sesión expirada o no autorizada.");
+  if (response.status !== 401) {
+    return;
   }
+
+  localStorage.removeItem("token");
+  localStorage.removeItem("usuario");
+  localStorage.removeItem("cliente");
+  localStorage.removeItem("coach");
+
+  window.location.href = "/login";
+
+  throw new Error("Sesión expirada o no autorizada.");
 }
 
 export async function getAppointments() {
-  const response = await fetch(`${API_URL}/Appointments`, {
+  const response = await fetch(`${API_URL}/api/appointments`, {
     method: "GET",
     headers: {
       ...getAuthHeaders(),
@@ -53,7 +61,7 @@ export async function getAppointments() {
 }
 
 export async function createAppointment(appointmentData) {
-  const response = await fetch(`${API_URL}/Appointments`, {
+  const response = await fetch(`${API_URL}/api/appointments`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -73,7 +81,7 @@ export async function createAppointment(appointmentData) {
 }
 
 export async function updateAppointment(appointmentId, appointmentData) {
-  const response = await fetch(`${API_URL}/Appointments/${appointmentId}`, {
+  const response = await fetch(`${API_URL}/api/appointments/${appointmentId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
