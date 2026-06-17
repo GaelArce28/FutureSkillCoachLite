@@ -1,4 +1,4 @@
-export const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5140/api";
+export const API_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:5140").replace(/\/$/, "");
 
 export function getAuthHeaders() {
   const token = localStorage.getItem("token");

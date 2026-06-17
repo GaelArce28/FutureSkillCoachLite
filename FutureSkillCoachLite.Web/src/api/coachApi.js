@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5140";
+const API_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:5140").replace(/\/$/, "");
 
 async function readJsonResponse(response) {
   const text = await response.text();
