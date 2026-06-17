@@ -6,7 +6,7 @@ async function readJsonResponse(response) {
 }
 
 export async function login(email, password) {
-  const response = await fetch(`${API_URL}/Auth/login`, {
+  const response = await fetch(`${API_URL}/api/Auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
