@@ -1,5 +1,6 @@
 
         namespace FutureSkillCoachLite.Dto.Clients;
+        //ESTA CLASE REPRESENTA LOS DATOS QUE EL FRONTEND ENVIA PARA CREAR UN NUEVO CLIENTE
 
         public class CreateClientRequestDto
         {

@@ -3,7 +3,7 @@ using FutureSkillCoachLite.DomainService.Interfaces;
 using FutureSkillCoachLite.Infrastructure.Interfaces;
 
 namespace FutureSkillCoachLite.DomainService.Services;
-
+    // ESTA CLASE MANEJA TODA LA LOGICA DE NEGOCIO RELACIONADA CON LOS COACHES, INCLUYENDO LA VALIDACIÓN DE DATOS Y LA INTERACCIÓN CON EL REPOSITORIO DE COACHES.
 public class CoachService : ICoachService
 {
     private readonly ICoachRepository _coachRepository;

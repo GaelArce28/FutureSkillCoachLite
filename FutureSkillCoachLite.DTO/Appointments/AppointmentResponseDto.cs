@@ -1,6 +1,6 @@
 using System;
             namespace FutureSkillCoachLite.Dto.Appointments;
-
+        // ESTA CLASE  PERMITE DEVOLVER LOS DATOS DE UNA CITA AL FRONTEND, INCLUYENDO INFORMACIÓN SOBRE EL CLIENTE Y EL COACH ASOCIADOS A LA CITA.
         public class AppointmentResponseDto
         {
             public int AppointmentId { get; set; }

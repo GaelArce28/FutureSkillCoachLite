@@ -1,5 +1,5 @@
             namespace FutureSkillCoachLite.Dto.Clients;
-
+        // ESTA CLASE REPRESENTA LOS DATOS QUE EL BACKEND DEVUELVE AL FRONTEND CUANDO SE SOLICITA INFORMACIÓN SOBRE UN CLIENTE
         public class ClientResponseDto
         {
             public int ClientId { get; set; }

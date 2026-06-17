@@ -1,7 +1,7 @@
             namespace FutureSkillCoachLite.Dto.Coaches;
 
 
-
+        // ESTA CLASE REPRESENTA LOS DATOS QUE EL FRONT END ENVIA PPARA CREAR UN NUEVO COACH
         public class CreateCoachRequestDto
         {
             public string FullName { get; set; } = string.Empty;

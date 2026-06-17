@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
             namespace FutureSkillCoachLite.Infrastructure.Data;
-
+            // ESTA CLASE SE UTILIZA PARA CREAR UNA INSTANCIA DE AppDbContext DURANTE EL DISEÑO, ESPECIALMENTE CUANDO SE EJECUTAN MIGRACIONES 
             public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
             {
                 public AppDbContext CreateDbContext(string[] args)

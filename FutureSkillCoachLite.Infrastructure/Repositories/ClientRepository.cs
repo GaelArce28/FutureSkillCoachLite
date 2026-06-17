@@ -2,7 +2,7 @@ using FutureSkillCoachLite.Domain.Entities;
 using FutureSkillCoachLite.Infrastructure.Data;
 using FutureSkillCoachLite.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
-
+//clase encargada de consultar, guardar, actualizar o eliminar datos en la base de datos/
 namespace FutureSkillCoachLite.Infrastructure.Repositories;
 
 public class ClientRepository : IClientRepository

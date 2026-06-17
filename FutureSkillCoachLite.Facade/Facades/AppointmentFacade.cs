@@ -4,7 +4,8 @@ using FutureSkillCoachLite.Dto.Appointments;
 using FutureSkillCoachLite.Facade.Interfaces;
 
 namespace FutureSkillCoachLite.Facade.Facades;
-
+    //ESTA CLASE ACTUA COMO UN PUENTE ENTRE LOS CONTROLADORES Y LOS SERVICIOS DE DOMINIO
+    // RECIBE LAS SOLICITUDES Y DEVUELVE LOS DTO DE RESPUESTA AL FRONTEND.
 public class AppointmentFacade : IAppointmentFacade
 {
     private readonly IAppointmentService _appointmentService;

@@ -4,6 +4,7 @@ using FutureSkillCoachLite.Infrastructure.Interfaces;
 
 namespace FutureSkillCoachLite.DomainService.Services;
 
+    //esta clase maneja toda la logica de negocio relacionada con las citas, incluyendo la validación de datos y la interacción con el repositorio de citas.
 public class AppointmentService : IAppointmentService
 {
     private readonly IAppointmentRepository _appointmentRepository;

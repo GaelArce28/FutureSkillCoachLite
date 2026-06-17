@@ -3,7 +3,7 @@ using FutureSkillCoachLite.Dto.Auth;
 using FutureSkillCoachLite.Facade.Interfaces;
 
 namespace FutureSkillCoachLite.Facade.Facades;
-
+ //ESTA CLASE MANEJA LA LÓGICA DE AUTENTICACIÓN PARA LOS CLIENTES Y COACHES, VERIFICANDO LAS CREDENCIALES PROPORCIONADAS Y DEVOLVIENDO LA INFORMACIÓN DE USUARIO CORRESPONDIENTE
 public class AuthFacade : IAuthFacade
 {
     private readonly IClientService _clientService;

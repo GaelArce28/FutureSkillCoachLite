@@ -2,7 +2,8 @@ using FutureSkillCoachLite.Api.Services;
 using FutureSkillCoachLite.Dto.Auth;
 using FutureSkillCoachLite.Facade.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-
+// ESTA CLASE GESTIONA LAS PETICIONES HTTPS DE LA AUTENTICACIÓN GET, POST, PUT Y DELETE, 
+        // LLAMANDO A LOS MÉTODOS CORRESPONDIENTES EN EL AUTHFACADE
 namespace FutureSkillCoachLite.Api.Controllers;
 
 [ApiController]

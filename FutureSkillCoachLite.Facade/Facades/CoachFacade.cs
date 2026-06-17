@@ -5,6 +5,8 @@ using FutureSkillCoachLite.Facade.Interfaces;
 
 namespace FutureSkillCoachLite.Facade.Facades;
 
+         //ESTA CLASE ACTUA COMO UN PUENTE ENTRE LOS CONTROLADORES Y LOS SERVICIOS DE DOMINIO
+    // RECIBE LAS SOLICITUDES Y DEVUELVE LOS DTO DE RESPUESTA AL FRONTEND.
 public class CoachFacade : ICoachFacade
 {
     private readonly ICoachService _coachService;

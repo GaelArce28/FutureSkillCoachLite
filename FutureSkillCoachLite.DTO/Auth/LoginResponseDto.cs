@@ -1,5 +1,6 @@
 namespace FutureSkillCoachLite.Dto.Auth;
 
+// ESTA CLASE REPRESENTA LOS DATOS QUE EL BACKEND DEVUELVE AL FRONTEND CUANDO SE SOLICITA INICIAR SESIÓN
 public class LoginResponseDto
 {
     public int Id { get; set; }

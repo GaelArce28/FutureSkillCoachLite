@@ -9,7 +9,7 @@ public interface ICoachService
     Task<Coach?> GetByIdAsync(int coachId);
 
     Task<Coach?> GetByEmailAsync(string email);
-
+ //metodos post, put, delete    
     Task<Coach> CreateAsync(Coach coach);
 
     Task<Coach?> UpdateAsync(Coach coach);

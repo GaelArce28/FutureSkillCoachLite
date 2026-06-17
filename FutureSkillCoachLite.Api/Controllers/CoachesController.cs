@@ -2,7 +2,8 @@ using System;
 using FutureSkillCoachLite.Dto.Coaches;
 using FutureSkillCoachLite.Facade.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-
+        // ESTA CLASE GESTIONA LAS PETICIONES HTTPS DE LOS COACHES GET, POST, PUT Y DELETE, 
+        // LLAMANDO A LOS MÉTODOS CORRESPONDIENTES EN EL COACHFACADE
 namespace FutureSkillCoachLite.Api.Controllers;
 
 [ApiController]

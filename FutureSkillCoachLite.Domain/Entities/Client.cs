@@ -1,5 +1,5 @@
                     namespace FutureSkillCoachLite.Domain.Entities;
-
+            //entidad cliente con sus respectivas propiedades, incluyendo la relación con Coach
         public class Client
         {
             public int ClientId { get; set; }

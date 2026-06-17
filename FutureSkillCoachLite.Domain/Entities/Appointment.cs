@@ -1,6 +1,9 @@
             namespace FutureSkillCoachLite.Domain.Entities;
 
-        public class Appointment
+            //entidad appointment con sus respectivas propiedades, incluyendo las relaciones con Client y Coach
+            
+
+            public class Appointment
         {
             public int AppointmentId { get; set; }
 

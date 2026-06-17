@@ -2,7 +2,8 @@ using FutureSkillCoachLite.Dto.Appointments;
 using FutureSkillCoachLite.Facade.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-
+        // ESTA CLASE GESTIONA LAS PETICIONES HTTPS DE LAS CITAS GET, POST, PUT Y DELETE, 
+        // LLAMANDO A LOS MÉTODOS CORRESPONDIENTES EN EL APPOINTMENTFACADE
 namespace FutureSkillCoachLite.Api.Controllers;
 
 [ApiController]

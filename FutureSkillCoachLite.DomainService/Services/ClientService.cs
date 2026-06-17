@@ -4,6 +4,7 @@ using FutureSkillCoachLite.Infrastructure.Interfaces;
 
 namespace FutureSkillCoachLite.DomainService.Services;
 
+    //  ESTA CLASE MANEJA TODA LA LOGICA DE NEGOCIO RELACIONADA CON LOS CLIENTES, INCLUYENDO LA VALIDACIÓN DE DATOS Y LA INTERACCIÓN CON EL REPOSITORIO DE CLIENTES.
 public class ClientService : IClientService
 {
     private readonly IClientRepository _clientRepository;

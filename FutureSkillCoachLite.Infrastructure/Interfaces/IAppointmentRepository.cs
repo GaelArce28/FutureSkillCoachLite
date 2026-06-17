@@ -1,7 +1,7 @@
 using FutureSkillCoachLite.Domain.Entities;
 
 namespace FutureSkillCoachLite.Infrastructure.Interfaces;
-
+// esta  lase es la interfaz del repositorio de citas. operaciones CRUD y validar la existencia de clientes y coaches.
 public interface IAppointmentRepository
 {
     Task<List<Appointment>> GetAllAsync();

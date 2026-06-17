@@ -4,7 +4,7 @@ using FutureSkillCoachLite.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace FutureSkillCoachLite.Infrastructure.Repositories;
-
+//clase encargada de consultar, guardar, actualizar o eliminar datos en la base de datos
 public class CoachRepository : ICoachRepository
 {
     private readonly AppDbContext _context;
